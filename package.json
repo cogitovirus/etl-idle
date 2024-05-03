@@ -1,8 +1,29 @@
 {
-  "name": "etl-idle-react",
-  "version": "0.1.0",
+  "name": "etl-idle",
+  "version": "0.1.1",
   "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "format:check": "prettier --check --ignore-path .gitignore --ignore-path .prettierignore .",
+    "format:fix": "prettier --write --ignore-path .gitignore --ignore-path .prettierignore .",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
   "dependencies": {
+    "react": "^18",
+    "react-dom": "^18",
+    "next": "14.2.3",
     "@emotion/cache": "^11.11.0",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
@@ -10,14 +31,8 @@
     "@mui/material": "^5.15.16",
     "@mui/material-nextjs": "^5.15.11",
     "clsx": "^2.1.1",
-    "lucide-react": "^0.378.0",
-    "next": "^14.2.3",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4"
+    "lucide-react": "^0.378.0"
   },
-
   "devDependencies": {
     "@storybook/addon-essentials": "^7.6.13",
     "@storybook/addon-interactions": "^7.6.13",
@@ -46,35 +61,5 @@
     "ts-node": "^10.9.2",
     "tsconfig-paths-webpack-plugin": "^4.1.0",
     "typescript": "^5"
-  },
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "format:check": "prettier --check --ignore-path .gitignore --ignore-path .prettierignore .",
-    "format:fix": "prettier --write --ignore-path .gitignore --ignore-path .prettierignore .",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
   }
 }
