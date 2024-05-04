@@ -15,6 +15,11 @@ Low priority
 - [ ] Dark mode ? (switch material)
 - [ ] Not found page
 
+## Component design
+- data collection
+ Transition
+
+
 ## Stack
 ### MUI
 https://mui.com/material-ui/
@@ -38,7 +43,6 @@ Link - but this is boring
 
 Badge in the sidebar to indicate new upgrades
 
-! Transition for activity 
 
 
 Layout
@@ -61,11 +65,13 @@ https://react.dev/
 ### Next.js
 https://nextjs.org/
 
+### Storybook
+https://storybook.js.org/
+
 ### Others
 emotion
 lucide-react - just icons
 radix - ?
-storybook - https://storybook.js.org/
 postcss - https://postcss.org/
 jest
 
