@@ -7,28 +7,19 @@ Finite idle game. The player is a data engineer who has to manage the data pipel
 
 ### Concept
 
-
-
+bytes/s
+kB/s
+MB/s
+GB/s
+TB/s
+PB/s
+EB/s
+ZB/s
 
 Upgrades:
 - Hadoop cluster
 - Spark
 
-
-
-### Genre
-Idle / Clicker
-
-### Target audience
-Retards such as myself.
-
-### Gameplay summary
-
-## Gameplay mechanics
-
-### Core mechanics
-
-### Level design
 
 #### Batch
 Upgrades:
@@ -45,45 +36,11 @@ Upgrades:
 - TensorFlow
 
 ### AI
+- LLM
+- LangChain
 
-### Progression system
-
-### Scoring system
-
-## Story and Characters
-
-### Narrative
-
-### Characters
-
-## World Setting
-
-### Setting and Environment
-
-### World background
 
 ## Art style
-Retro. Or maybe not.
+Retro.
 
-### Visual style
-
-### Audio style
-
-## User Interface
-
-### Screens
-
-## Technical details
-React.js
-
-### Platforms
-Web/Desktop
-
-### Engine
-
-### Network requirements
-
-## Monetization strategy
-
-### Business model
 

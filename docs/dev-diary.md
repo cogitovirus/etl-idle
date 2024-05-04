@@ -2,9 +2,12 @@
 Project start: 2024.05.03
 
 ## TODO
+- [ ] Engine prototype
+- [ ] move drawer to a seperate component
 - [ ] Engine template
 - [ ] UI wireframe
 - [x] Project template
+- [ ] Design - game start & mechanics
 
 Low priority
 - [ ] Font / Font cdn
@@ -76,8 +79,6 @@ jest
 - A dark room
 - Universal Paperclips
 - Spaceplan
-
-
 
 
 Inspiration: https://dribbble.com/shots/17463496-Investment-Dashboard

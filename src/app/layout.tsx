@@ -57,16 +57,25 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
     flexShrink: 0,
     whiteSpace: 'nowrap',
     boxSizing: 'border-box',
+    position: 'fixed',
+    zIndex: 1100,
     ...(open && {
       ...openedMixin(theme),
-      '& .MuiDrawer-paper': openedMixin(theme),
+      '& .MuiDrawer-paper': {
+        ...openedMixin(theme),
+        position: 'fixed',
+      },
     }),
     ...(!open && {
       ...closedMixin(theme),
-      '& .MuiDrawer-paper': closedMixin(theme),
+      '& .MuiDrawer-paper': {
+        ...closedMixin(theme),
+        position: 'fixed',
+      },
     }),
   }),
 );
+
 
 export default function RootLayout({
   children,
@@ -76,7 +85,7 @@ export default function RootLayout({
   const [open, setOpen] = React.useState(false);
 
   const handleDrawerToggle = () => {
-    setOpen(prevOpen => !prevOpen);
+    setOpen(!open);
   };
 
   return (
@@ -104,7 +113,7 @@ export default function RootLayout({
                 </Toolbar>
               </AppBar>
               <Drawer variant="permanent" open={open}>
-                <List>
+                <List sx={{mt: 8}}>
                   {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
                     <ListItem key={text} disablePadding sx={{ display: 'block' }}>
                       <ListItemButton
