@@ -15,6 +15,7 @@ export const Opened: Story = {
   render: (args) => <NavDrawer {...args} />,
   args: {
     open: true,
+    sx: {}
   },
 };
 
@@ -22,5 +23,6 @@ export const Closed: Story = {
   render: (args) => <NavDrawer {...args} />,
   args: {
     open: false,
+    sx: {}
   },
 };

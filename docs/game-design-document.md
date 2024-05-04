@@ -21,6 +21,31 @@ Upgrades:
 - Spark
 
 
+## Obj
+class
+id
+name
+desc
+buyName ?
+tags ?
+cost = { $, bytes}
+require - eq or object ?
+modifiers - { speed: 1.2, cost: 0.8 }
+
+events
+
+tasks ? 
+upgrades ?
+
+Global State: Consider using React Contexts (/contexts) or another state management library to manage global game state accessible across different components.
+Local State: For local state management (e.g., UI state like toggles, modals), use local component state or custom hooks (/hooks).
+
+game state / useState / redux / wtf is state anyways
+ avoid component state
+ 
+I recommend holding your values outside react (e.g. in Redux) and passing your values into a functional component rather than holding the values in component state. 
+
+
 #### Batch
 Upgrades:
 - Hadoop

@@ -89,3 +89,19 @@ jest
 
 Inspiration: https://dribbble.com/shots/17463496-Investment-Dashboard
 https://dribbble.com/shots/18151675-Retro-Style-Pastel-Billing-UI-Cards
+
+
+## github
+https://github.com/kitnato/farcebook/blob/main/src/components/Main/Likes.tsx
+https://github.com/kamenjan/idle-game-engine/blob/master/src/reducers.js
+https://codesandbox.io/p/sandbox/react-incremental-clicker-game-dh05n?file=%2Fsrc%2Fcontext%2FGameContext.js
+https://github.com/Alaricus/clicker-tutorial-react
+
+Persistence and Restoration: Some applications need to save state even when the user closes the browser, and restore it when the user returns. State management systems can facilitate this by integrating with persistence mechanisms like local storage or databases.
+
+React's context API (useContext) combined with useReducer or useState is often enough for many applications and is simpler to use than Redux. Here are some benefits:
+
+
+requestAnimationFrame 
+
+, the state is initiated and stored within a component. You can pass the state information to children components as props, but the logic for updating the state should be kept within the component where state was initially created.

@@ -35,7 +35,7 @@ const closedMixin = (theme: Theme): CSSObject => ({
 });
 
 const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
-  ({ theme, open }) => ({
+  ({ theme, open, sx }) => ({
     width: drawerWidth,
     flexShrink: 0,
     whiteSpace: 'nowrap',
@@ -47,6 +47,9 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
       '& .MuiDrawer-paper': {
         ...openedMixin(theme),
         position: 'fixed',
+        ...sx,
+        // TODO: Don't know why those don't work when passed from sx
+        marginTop: 64,
       },
     }),
     ...(!open && {
@@ -54,6 +57,8 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
       '& .MuiDrawer-paper': {
         ...closedMixin(theme),
         position: 'fixed',
+        ...sx,
+        marginTop: 64,
       },
     }),
   }),
@@ -61,11 +66,13 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 type NavDrawerProps = {
   open: boolean;
+  sx?: CSSObject;
 };
 
-export default function NavDrawer({ open }: NavDrawerProps) {
-  return (<Drawer variant="permanent" open={open}>
-    <List sx={{ mt: 8 }}>
+export default function NavDrawer({ open, sx }: NavDrawerProps) {
+  return (
+  <Drawer variant="permanent" open={open} sx={sx}>
+    <List>
       {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
         <ListItem key={text} disablePadding sx={{ display: 'block' }}>
           <ListItemButton
