@@ -1,5 +1,6 @@
 import React, { useReducer, useEffect, useRef } from 'react';
 import { initialState, reducer } from '@engine/core/GameState';
+import { Typography, Box, Button } from '@mui/material';
 
 function GameComponent() {
     const [state, dispatch] = useReducer(reducer, initialState);
@@ -30,10 +31,17 @@ function GameComponent() {
       };
   }, []); // Empty array means the effect runs only once on mount
     return (
-        <div>
-            <h1>Score: {state.score}</h1>
-            <button onClick={() => dispatch({ type: 'bigIncrement' })}>Click Me!</button>
-        </div>
+      <Box>
+        <Typography variant="h6" component="div">Score:</Typography>
+        <Typography variant="h6" component="div">{state.score}</Typography>
+        <Button onClick={() => dispatch({ type: 'bigIncrement' })}>Click Me!</Button>
+      </Box>
+
+        // <div>
+
+        //     <h1>Score: {state.score}</h1>
+        //     <button onClick={() => dispatch({ type: 'bigIncrement' })}>Click Me!</button>
+        // </div>
     );
 }
 
