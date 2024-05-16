@@ -4,6 +4,7 @@ import { Box, Grid, Paper, Typography } from '@mui/material';
 import Generator from '@app/components/generator-example/Generator-example';
 import Upgrade from '@app/components/upgrade/Upgrade';
 import DataCollectionStack from "@app/components/data-collection-stack/DataCollectionStack";
+import { GameStats } from '../game-stats/GameStats';
 
 
 export function Game() {
@@ -30,11 +31,12 @@ export function Game() {
           <Typography variant="h6" component="div">UpgradeCard</Typography>
           <Paper elevation={2} sx={{ marginTop: 2, padding: 2 }}>
             <Box>
-              <Typography variant="h6">Funds: ${gameState.getFunds()}</Typography>
-              <Typography variant="h6">Data: {gameState.getData()} Mb</Typography>
-              <Typography variant="h6">Processing Speed: {gameState.getProcessingSpeed()} Mb/s</Typography>
-              <Typography variant="h6">Data Warehouse Capacity: {gameState.getDataWarehouseCapacity()} Mb</Typography>
-
+              <GameStats
+                funds={gameState.getFunds()}
+                data={gameState.getData()}
+                processingSpeed={gameState.getProcessingSpeed()}
+                dataWarehouseCapacity={gameState.getDataWarehouseCapacity()}
+              />
               <Box>
                 <Generator id="1" name="Basic Generator" rate={1} cost={100} />
                 {/* Add more Generator components as needed */}

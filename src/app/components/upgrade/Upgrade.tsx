@@ -8,14 +8,14 @@ interface UpgradeProps {
   cost: number;
 }
 
-export function Upgrade({ id, name, cost }: UpgradeProps) {
+export function Upgrade({ id, name, cost }: UpgradeProps){
   const context = useContext(GameStateContext);
 
   if (!context) {
     throw new Error('Upgrade must be used within a GameStateProvider');
   }
 
-  const { gameState } = context;
+  const gameState = context;
 
   const handlePurchase = () => {
     gameState.buyUpgrade(id);
