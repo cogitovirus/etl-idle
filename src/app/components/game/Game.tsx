@@ -17,10 +17,11 @@ export function Game() {
         <Paper sx={{ height: '100%', padding: 2 }}>
           <Paper elevation={2} sx={{ marginTop: 2, padding: 2 }}>
           </Paper>
-          <Typography variant="h6" component="div" sx={{ marginTop: 2 }}>DataCollectionStackContainer</Typography>
           <Paper elevation={2} sx={{ marginTop: 2, height: 300, padding: 2 }}>
             {/* dataCollection stack */}
-            <DataCollectionStack />
+            <DataCollectionStack initial={{ opacity: 0, y: -50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }} />
           </Paper>
         </Paper>
       </Grid>

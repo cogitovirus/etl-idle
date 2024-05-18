@@ -22,7 +22,12 @@ function LinearProgressWithLabel(props: LinearProgressProps & { value: number, l
   );
 }
 
-function DataCollectionItem({ dataCollectionName, dataCollectionSize, processingSpeed, onComplete }: DataCollectionProps) {
+export default function DataCollectionItem({
+  dataCollectionName,
+  dataCollectionSize,
+  processingSpeed,
+  onComplete
+}: DataCollectionProps) {
   const [processed, setProcessed] = React.useState(0);
 
   React.useEffect(() => {
@@ -38,7 +43,7 @@ function DataCollectionItem({ dataCollectionName, dataCollectionSize, processing
         }
         return nextProcessed;
       });
-    }, 200);
+    }, 1000);
 
     return () => {
       clearInterval(timer);
@@ -60,5 +65,3 @@ function DataCollectionItem({ dataCollectionName, dataCollectionSize, processing
     </Card>
   );
 }
-
-export default DataCollectionItem;

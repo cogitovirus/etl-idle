@@ -20,6 +20,14 @@ export class GameState {
   private dataWarehouseCapacity: number; // Capacity in Mb
   private dataCollections: DataCollection[];
   private upgrades: Upgrade[];
+  // visibility modifiers
+  private commandLineVisible: boolean;
+  private dataCollectionVisible: boolean;
+  private tasksVisible: boolean;
+  private upgradesVisible: boolean;
+  private fundsVisible: boolean;
+  private storageVisible: boolean;
+
 
   constructor() {
     this.funds = 0;
@@ -28,6 +36,8 @@ export class GameState {
     this.dataWarehouseCapacity = 10 * 1024; // 10 Gb in Mb
     this.dataCollections = [];
     this.upgrades = [];
+    this.commandLineVisible = true;
+    this.dataCollectionVisible = true;
   }
 
   buyUpgrade(upgradeId: string) {

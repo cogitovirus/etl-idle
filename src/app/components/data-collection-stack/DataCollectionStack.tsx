@@ -2,6 +2,8 @@ import * as React from 'react';
 import Stack from '@mui/material/Stack';
 import DataCollectionItem from '../data-collection-item/DataCollectionItem';
 import { useGameState } from '../../contexts/GameStateContext';
+import { motion } from "framer-motion";
+
 
 interface DataCollection {
   name: string;
@@ -14,7 +16,7 @@ const initialDataCollections: DataCollection[] = [
   { name: 'Data Collection 3', size: 30 },
 ];
 
-function DataCollectionStack() {
+const DataCollectionStack = React.forwardRef<HTMLDivElement, {}>(function DataCollectionStack (props, ref) {
   const gameState = useGameState();
   const [dataCollections, setDataCollections] = React.useState<DataCollection[]>(initialDataCollections);
   const [currentIndex, setCurrentIndex] = React.useState(0);
@@ -25,7 +27,7 @@ function DataCollectionStack() {
     // updateGameState(); // Trigger re-render
     setCurrentIndex((prevIndex) => prevIndex + 1);
 
-    // Add new data collection with increased difficulty
+    // TEMP: Add new data collection with increased difficulty
     const newDataCollection = {
       name: `Data Collection ${dataCollections.length + 1}`,
       size: dataCollections[dataCollections.length - 1].size + 10,
@@ -34,8 +36,8 @@ function DataCollectionStack() {
   };
 
   return (
-    <Stack spacing={2}>
-      {dataCollections.slice(currentIndex, currentIndex + 1).map((dataCollection, index) => (
+    <Stack {...props} spacing={2} ref={ref}>
+      {dataCollections.slice(currentIndex, currentIndex + 3).map((dataCollection, index) => (
         <DataCollectionItem
           key={index}
           dataCollectionName={dataCollection.name}
@@ -46,6 +48,6 @@ function DataCollectionStack() {
       ))}
     </Stack>
   );
-}
+});
 
-export default DataCollectionStack;
+export default motion(DataCollectionStack);

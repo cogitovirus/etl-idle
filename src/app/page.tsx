@@ -19,7 +19,7 @@ export default function Home() {
   return (
     <Box sx={{ display: 'flex' }}>
       <NavAppBar handleDrawerToggle={handleDrawerToggle} />
-      <NavDrawer open={open} />
+      {/* <NavDrawer open={open} /> */}
       <GameStateProvider>
         <Game />
       </GameStateProvider>
