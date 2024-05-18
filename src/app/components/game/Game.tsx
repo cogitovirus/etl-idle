@@ -13,7 +13,7 @@ export function Game() {
   return (
     <Grid container spacing={2} padding={2} ml={8} mt={4}>
       {/* Left Column */}
-      <Grid item xs={12} md={8}>
+      <Grid item xs={12} md={6}>
         <Paper sx={{ height: '100%', padding: 2 }}>
           <Paper elevation={2} sx={{ marginTop: 2, padding: 2 }}>
           </Paper>

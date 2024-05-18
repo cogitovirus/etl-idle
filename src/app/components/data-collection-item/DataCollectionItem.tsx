@@ -15,7 +15,7 @@ interface DataCollectionProps {
 function LinearProgressWithLabel(props: LinearProgressProps & { value: number, label: string }) {
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-      <Box sx={{ width: '100%', mr: 1 }}>
+      <Box sx={{ width: '75%', mr: 1 }}>
         <LinearProgress variant="determinate" {...props} />
       </Box>
       <Box sx={{ minWidth: 35 }}>
@@ -59,9 +59,9 @@ const DataCollectionItem = React.forwardRef<HTMLDivElement, DataCollectionProps>
   const progressLabel = `(${Math.round(progress)}% complete)`;
 
   return (
-    <Card ref={ref}>
+    <Card ref={ref} sx={{ width: '100%' }}>
       <CardContent>
-        <Typography variant="h5" component="div">{dataCollection.name}</Typography>
+        <Typography variant="h6" component="div">{dataCollection.name}</Typography>
         <Typography variant="body2" component="p">{dataCollection.dataSize} Mb</Typography>
         <Box sx={{ width: '100%' }}>
           <LinearProgressWithLabel value={progress} label={progressLabel} />

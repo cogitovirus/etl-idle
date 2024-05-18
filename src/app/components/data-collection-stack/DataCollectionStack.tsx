@@ -22,7 +22,7 @@ const DataCollectionStack = React.forwardRef<HTMLDivElement, {}>(function DataCo
   };
 
   return (
-    <Stack {...props} spacing={2} ref={ref}>
+    <Stack {...props} spacing={1.5} ref={ref}>
       <AnimatePresence>
         {dataCollections.slice(currentIndex, currentIndex + 3).map((dataCollection, index) => (
           <DataCollectionItem
