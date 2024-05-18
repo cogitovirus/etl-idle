@@ -1,17 +1,6 @@
-export interface Upgrade {
-  id: string;
-  name: string;
-  cost: number;
-  effect: (state: GameState) => void;
-}
-
-interface DataCollection {
-  id: string;
-  name: string;
-  dataSize: number; // Total size of data collection in Mb
-  processed: number; // Amount of data already processed in Mb
-  cost: number;
-}
+import { v4 as uuid4 } from "uuid";
+import { DataCollection } from "../entities/DataCollection";
+import { Upgrade } from "../entities/Upgrade";
 
 export class GameState {
   private funds: number;
@@ -23,10 +12,10 @@ export class GameState {
   // visibility modifiers
   private commandLineVisible: boolean;
   private dataCollectionVisible: boolean;
-  private tasksVisible: boolean;
-  private upgradesVisible: boolean;
-  private fundsVisible: boolean;
-  private storageVisible: boolean;
+  // private tasksVisible: boolean;
+  // private upgradesVisible: boolean;
+  // private fundsVisible: boolean;
+  // private storageVisible: boolean;
 
 
   constructor() {
@@ -34,34 +23,36 @@ export class GameState {
     this.data = 0;
     this.processingSpeed = 1; // Initial processing speed
     this.dataWarehouseCapacity = 10 * 1024; // 10 Gb in Mb
-    this.dataCollections = [];
+    this.dataCollections = [ // seed data collections
+      { id: uuid4(), name: 'Data Collection 1', dataSize: 3 },
+      { id: uuid4(), name: 'Data Collection 2', dataSize: 4 },
+      { id: uuid4(), name: 'Data Collection 3', dataSize: 5 },
+    ];
     this.upgrades = [];
     this.commandLineVisible = true;
     this.dataCollectionVisible = true;
   }
 
-  buyUpgrade(upgradeId: string) {
-    const upgrade = this.upgrades.find(u => u.id === upgradeId);
-    if (upgrade && this.canAfford(upgrade.cost)) {
-      upgrade.effect(this);
-      this.deductFunds(upgrade.cost);
-    }
-  }
+  // Getters
+  getFunds(): number { return this.funds; }
+  getData(): number { return this.data; }
+  getProcessingSpeed(): number { return this.processingSpeed; }
+  getDataWarehouseCapacity(): number { return this.dataWarehouseCapacity; }
+  getDataCollections(): DataCollection[] { return this.dataCollections; }
+  getUpgrades(): Upgrade[] { return this.upgrades; }
 
-  addDataCollection(dataCollection: DataCollection) {
-    this.dataCollections.push(dataCollection);
+  // Setters
+  addFunds(amount: number) { this.funds += amount; }
+  deductFunds(cost: number) { this.funds -= cost; }
+  addDataCollection(dataCollection: DataCollection) { this.dataCollections.push(dataCollection); }
+  removeDataCollection(id: string) {
+    this.dataCollections = this.dataCollections.filter(collection => collection.id !== id);
   }
+  addUpgrade(upgrade: Upgrade) { this.upgrades.push(upgrade); }
 
-  // Method to process data
-  processData() {
-    this.dataCollections.forEach(collection => {
-      const processable = Math.min(collection.dataSize - collection.processed, this.processingSpeed);
-      collection.processed += processable;
-      if (collection.processed === collection.dataSize) {
-        this.addToWarehouse(collection.dataSize);
-        collection.processed = 0; // Reset the collection for now, can be handled differently
-      }
-    });
+  // Check if the player can afford a cost
+  canAfford(cost: number): boolean {
+    return this.funds >= cost;
   }
 
   // Method to add processed data to warehouse
@@ -84,45 +75,5 @@ export class GameState {
   // Method to increase processing speed
   increaseProcessingSpeed(amount: number) {
     this.processingSpeed += amount;
-  }
-
-  // Check if the player can afford a cost
-  private canAfford(cost: number): boolean {
-    return this.funds >= cost;
-  }
-
-  // Deduct funds from the player
-  deductFunds(cost: number) {
-    this.funds -= cost;
-  }
-
-  // Add funds to the player
-  addFunds(amount: number) {
-    this.funds += amount;
-  }
-
-  // Get current funds
-  getFunds(): number {
-    return this.funds;
-  }
-
-  // Get current data
-  getData(): number {
-    return this.data;
-  }
-
-  // Get current processing speed
-  getProcessingSpeed(): number {
-    return this.processingSpeed;
-  }
-
-  // Get current data warehouse capacity
-  getDataWarehouseCapacity(): number {
-    return this.dataWarehouseCapacity;
-  }
-
-  // Add an upgrade to the game state
-  addUpgrade(upgrade: Upgrade) {
-    this.upgrades.push(upgrade);
   }
 }

@@ -21,7 +21,6 @@ function GameStateProvider({ children }: GameStateProviderProps): JSX.Element {
       const deltaTime = timestamp - previousTimeRef.current;
       // Update only every 200ms
       if (deltaTime > 200) {
-        gameState.processData(); // Process data in the game state
         previousTimeRef.current = timestamp;
       }
     } else {

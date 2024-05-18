@@ -2,11 +2,11 @@ import * as React from 'react';
 import { Typography, Box, Card, CardContent } from '@mui/material';
 import LinearProgress, { LinearProgressProps } from '@mui/material/LinearProgress';
 import { motion } from "framer-motion";
+import { DataCollection } from '@/engine/entities/DataCollection';
 
 
 interface DataCollectionProps {
-  dataCollectionName: string;
-  dataCollectionSize: number;
+  dataCollection: DataCollection;
   processingSpeed: number;
   isProcessing: boolean;
   onComplete: () => void;
@@ -26,8 +26,7 @@ function LinearProgressWithLabel(props: LinearProgressProps & { value: number, l
 }
 
 const DataCollectionItem = React.forwardRef<HTMLDivElement, DataCollectionProps>(function DataCollectionItem({
-  dataCollectionName,
-  dataCollectionSize,
+  dataCollection,
   processingSpeed,
   isProcessing,
   onComplete
@@ -42,10 +41,10 @@ const DataCollectionItem = React.forwardRef<HTMLDivElement, DataCollectionProps>
     const timer = setInterval(() => {
       setProcessed((prevProcessed) => {
         const nextProcessed = prevProcessed + processingSpeed;
-        if (nextProcessed >= dataCollectionSize) {
+        if (nextProcessed >= dataCollection.dataSize) {
           clearInterval(timer);
           onComplete();
-          return dataCollectionSize;
+          return dataCollection.dataSize;
         }
         return nextProcessed;
       });
@@ -54,16 +53,16 @@ const DataCollectionItem = React.forwardRef<HTMLDivElement, DataCollectionProps>
     return () => {
       clearInterval(timer);
     };
-  }, [isProcessing, processingSpeed, dataCollectionSize, onComplete]);
+  }, [isProcessing, processingSpeed, dataCollection, onComplete]);
 
-  const progress = (processed / dataCollectionSize) * 100;
+  const progress = (processed / dataCollection.dataSize) * 100;
   const progressLabel = `(${Math.round(progress)}% complete)`;
 
   return (
     <Card ref={ref}>
       <CardContent>
-        <Typography variant="h5" component="div">{dataCollectionName}</Typography>
-        <Typography variant="body2" component="p">{dataCollectionSize} Mb</Typography>
+        <Typography variant="h5" component="div">{dataCollection.name}</Typography>
+        <Typography variant="body2" component="p">{dataCollection.dataSize} Mb</Typography>
         <Box sx={{ width: '100%' }}>
           <LinearProgressWithLabel value={progress} label={progressLabel} />
         </Box>
