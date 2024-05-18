@@ -1,11 +1,14 @@
 import * as React from 'react';
 import { Typography, Box, Card, CardContent } from '@mui/material';
 import LinearProgress, { LinearProgressProps } from '@mui/material/LinearProgress';
+import { motion } from "framer-motion";
+
 
 interface DataCollectionProps {
   dataCollectionName: string;
   dataCollectionSize: number;
   processingSpeed: number;
+  isProcessing: boolean;
   onComplete: () => void;
 }
 
@@ -22,16 +25,19 @@ function LinearProgressWithLabel(props: LinearProgressProps & { value: number, l
   );
 }
 
-export default function DataCollectionItem({
+const DataCollectionItem = React.forwardRef<HTMLDivElement, DataCollectionProps>(function DataCollectionItem({
   dataCollectionName,
   dataCollectionSize,
   processingSpeed,
+  isProcessing,
   onComplete
-}: DataCollectionProps) {
+}: DataCollectionProps, ref) {
   const [processed, setProcessed] = React.useState(0);
 
   React.useEffect(() => {
-    setProcessed(0); // Reset processed data when a new data collection starts
+    // Reset processed data when a new data collection starts
+    setProcessed(0);
+    if (!isProcessing) return;
 
     const timer = setInterval(() => {
       setProcessed((prevProcessed) => {
@@ -48,13 +54,13 @@ export default function DataCollectionItem({
     return () => {
       clearInterval(timer);
     };
-  }, [processingSpeed, dataCollectionSize, onComplete]);
+  }, [isProcessing, processingSpeed, dataCollectionSize, onComplete]);
 
   const progress = (processed / dataCollectionSize) * 100;
-  const progressLabel = `${processed}/${dataCollectionSize} Mb (${Math.round(progress)}% complete)`;
+  const progressLabel = `(${Math.round(progress)}% complete)`;
 
   return (
-    <Card>
+    <Card ref={ref}>
       <CardContent>
         <Typography variant="h5" component="div">{dataCollectionName}</Typography>
         <Typography variant="body2" component="p">{dataCollectionSize} Mb</Typography>
@@ -64,4 +70,6 @@ export default function DataCollectionItem({
       </CardContent>
     </Card>
   );
-}
+});
+
+export default motion(DataCollectionItem);
