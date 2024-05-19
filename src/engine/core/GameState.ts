@@ -2,6 +2,8 @@ import { v4 as uuid4 } from "uuid";
 import { DataCollection } from "../entities/DataCollection";
 import { Upgrade } from "../entities/Upgrade";
 
+type StateChangeListener = () => void;
+
 export class GameState {
   private funds: number;
   private data: number;
@@ -17,6 +19,8 @@ export class GameState {
   // private fundsVisible: boolean;
   // private storageVisible: boolean;
 
+  // TODO: notify listeners has gaps, sometimes it might not notify listeners of the change
+  private listeners: StateChangeListener[] = [];
 
   constructor() {
     this.funds = 0;
@@ -42,8 +46,14 @@ export class GameState {
   getUpgrades(): Upgrade[] { return this.upgrades; }
 
   // Setters
-  addFunds(amount: number) { this.funds += amount; }
-  deductFunds(cost: number) { this.funds -= cost; }
+  addFunds(amount: number) {
+    this.funds += amount;
+    this.notifyListeners();
+  }
+  deductFunds(cost: number) {
+    this.funds -= cost;
+    this.notifyListeners();
+  }
   addDataCollection(dataCollection: DataCollection) { this.dataCollections.push(dataCollection); }
   removeDataCollection(id: string) {
     this.dataCollections = this.dataCollections.filter(collection => collection.id !== id);
@@ -62,6 +72,7 @@ export class GameState {
     } else {
       this.data = this.dataWarehouseCapacity; // Cap at warehouse capacity
     }
+    this.notifyListeners();
   }
 
   // Method to exchange data for funds
@@ -75,5 +86,23 @@ export class GameState {
   // Method to increase processing speed
   increaseProcessingSpeed(amount: number) {
     this.processingSpeed += amount;
+    this.notifyListeners();
+  }
+
+  increaseWarehouseCapacity(amount: number) {
+    this.dataWarehouseCapacity += amount;
+    this.notifyListeners();
+  }
+
+  subscribe(listener: StateChangeListener) {
+    this.listeners.push(listener);
+  }
+
+  unsubscribe(listener: StateChangeListener) {
+    this.listeners = this.listeners.filter(l => l !== listener);
+  }
+
+  private notifyListeners() {
+    this.listeners.forEach(listener => listener());
   }
 }

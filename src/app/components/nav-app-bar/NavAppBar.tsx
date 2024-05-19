@@ -28,7 +28,7 @@ export default function NavAppBar({ handleDrawerToggle }: NavAppBarProps) {
         <MenuIcon />
       </IconButton>
       <Typography variant="h6" noWrap component="div">
-        ETL Idle v0.1.1
+        ETL Idle v0.1.2
       </Typography>
     </Toolbar>
   </AppBar>
