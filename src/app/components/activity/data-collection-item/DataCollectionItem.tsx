@@ -3,6 +3,7 @@ import { Typography, Box, Card, CardContent } from '@mui/material';
 import LinearProgress, { LinearProgressProps } from '@mui/material/LinearProgress';
 import { motion } from "framer-motion";
 import { DataCollection } from '@/engine/entities/DataCollection';
+import Icon from '../../common/icon/Icon';
 
 
 interface DataCollectionProps {
@@ -24,6 +25,8 @@ function LinearProgressWithLabel(props: LinearProgressProps & { value: number, l
     </Box>
   );
 }
+
+const MemoizedIcon = React.memo(Icon);
 
 const DataCollectionItem = React.forwardRef<HTMLDivElement, DataCollectionProps>(function DataCollectionItem({
   dataCollection,
@@ -60,14 +63,20 @@ const DataCollectionItem = React.forwardRef<HTMLDivElement, DataCollectionProps>
   const progressLabel = `(${Math.round(progress)}% complete)`;
 
   return (
-    <Card ref={ref} sx={{ width: '100%' }}>
-      <CardContent>
-        <Typography variant="h6" component="div">{dataCollection.name}</Typography>
-        <Typography variant="body2" component="p">{dataCollection.dataSize} Mb</Typography>
-        <Box sx={{ width: '100%' }}>
-          <LinearProgressWithLabel value={progress} label={progressLabel} />
+    // TODO: rework the fucking styles
+    <Card ref={ref} sx={{ width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '92%', p: 2 }}>
+        <CardContent sx={{ flexGrow: 1, padding: 0 }}>
+          <Typography variant="h6" component="div">{dataCollection.name}</Typography>
+          <Typography variant="body2" component="p">{dataCollection.dataSize} Mb</Typography>
+        </CardContent>
+        <Box sx={{ display: 'flex', alignItems: 'normal' }}>
+          <MemoizedIcon name={dataCollection.icon} />
         </Box>
-      </CardContent>
+      </Box>
+      <Box sx={{ width: '100%', px: 2, pb: 2 }}>
+        <LinearProgressWithLabel value={progress} label={progressLabel} />
+      </Box>
     </Card>
   );
 });

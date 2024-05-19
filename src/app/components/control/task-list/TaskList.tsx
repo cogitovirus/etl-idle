@@ -52,7 +52,6 @@ export function TaskList() {
     taskService.startTask(taskId);
   };
 
-
   return (
     <Box>
       {unlockedTasks.map((task: Task) => (

@@ -1,13 +1,10 @@
 'use client'
-import React from "react";
-import { Box } from "@mui/material";
 import Game from "@/app/components/game/Game";
-import NavDrawer from "@components/nav-drawer/NavDrawer";
 import NavAppBar from "@/app/components/nav-app-bar/NavAppBar";
-
-// temp
-import Upgrade from './components/upgrade/Upgrade';
+import { Box } from "@mui/material";
+import React from "react";
 import { GameStateProvider } from './contexts/GameStateContext';
+
 
 export default function Home() {
   const [open, setOpen] = React.useState(false);
@@ -17,12 +14,12 @@ export default function Home() {
   };
 
   return (
-    <Box sx={{ display: 'flex' }}>
-      <NavAppBar handleDrawerToggle={handleDrawerToggle} />
-      {/* <NavDrawer open={open} /> */}
-      <GameStateProvider>
+    <GameStateProvider>
+      <Box sx={{ display: 'flex' }}>
+        <NavAppBar handleDrawerToggle={handleDrawerToggle} />
+        {/* <NavDrawer open={open} /> */}
         <Game />
-      </GameStateProvider>
-    </Box>
+      </Box>
+    </GameStateProvider>
   );
 }

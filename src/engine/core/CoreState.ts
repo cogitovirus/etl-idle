@@ -1,5 +1,6 @@
 import { v4 as uuid4 } from "uuid";
 import { DataCollection } from "../entities/DataCollection";
+import { DataCollectionService } from "../services/DataCollectionService";
 import { Upgrade } from "../entities/Upgrade";
 import { TaskService } from "../services/TaskService";
 import { Cost } from "../entities/Cost";
@@ -16,6 +17,7 @@ export class CoreState extends EventEmitter {
   private dataCollections: DataCollection[];
   // Tasks
   taskService: TaskService;
+  dataCollectionService: DataCollectionService;
   // Upgrades
   private allUpgrades: Upgrade[];
   private unlockedUpgrades: Upgrade[];
@@ -37,16 +39,30 @@ export class CoreState extends EventEmitter {
     this.processingSpeed = 1; // Initial processing speed
     this.dataWarehouseCapacity = 10 * 1024; // 10 Gb in Mb
     this.innovationCredits = 0;
-    this.dataCollections = [ // seed data collections
-      { id: uuid4(), name: 'Data Collection 1', dataSize: 3 },
-      { id: uuid4(), name: 'Data Collection 2', dataSize: 4 },
-      { id: uuid4(), name: 'Data Collection 3', dataSize: 5 },
-    ];
+    
     this.allUpgrades = [];
     this.unlockedUpgrades = [];
     this.commandLineVisible = true;
     this.dataCollectionVisible = true;
     this.taskService = new TaskService(this);
+    this.dataCollectionService = new DataCollectionService(this);
+    this.dataCollections = Array.from({ length: 3 }).map(() => this.dataCollectionService.generateRandomDataCollection());
+  }
+
+  // Data Collections
+  getDataCollections(): DataCollection[] { return this.dataCollections; }
+  addDataCollection(dataCollection: DataCollection) { this.dataCollections.push(dataCollection); }
+  removeDataCollection(id: string) {
+    this.dataCollections = this.dataCollections.filter(collection => collection.id !== id);
+  }
+  // Method to add processed data to warehouse
+  addToWarehouse(dataSize: number) {
+    if (this.data + dataSize <= this.dataWarehouseCapacity) {
+      this.data += dataSize;
+    } else {
+      this.data = this.dataWarehouseCapacity; // Cap at warehouse capacity
+    }
+    this.notifyListeners();
   }
 
   // Getters
@@ -54,7 +70,6 @@ export class CoreState extends EventEmitter {
   getData(): number { return this.data; }
   getProcessingSpeed(): number { return this.processingSpeed; }
   getDataWarehouseCapacity(): number { return this.dataWarehouseCapacity; }
-  getDataCollections(): DataCollection[] { return this.dataCollections; }
   getUpgrades(): Upgrade[] { return this.allUpgrades; }
   getInnovationCredits(): number { return this.innovationCredits; }
 
@@ -78,10 +93,7 @@ export class CoreState extends EventEmitter {
     this.notifyListeners();
   }
 
-  addDataCollection(dataCollection: DataCollection) { this.dataCollections.push(dataCollection); }
-  removeDataCollection(id: string) {
-    this.dataCollections = this.dataCollections.filter(collection => collection.id !== id);
-  }
+
 
   addUpgrade(upgrade: Upgrade) { this.allUpgrades.push(upgrade); }
 
@@ -98,15 +110,6 @@ export class CoreState extends EventEmitter {
       }
       return false;
     });
-  }
-  // Method to add processed data to warehouse
-  addToWarehouse(dataSize: number) {
-    if (this.data + dataSize <= this.dataWarehouseCapacity) {
-      this.data += dataSize;
-    } else {
-      this.data = this.dataWarehouseCapacity; // Cap at warehouse capacity
-    }
-    this.notifyListeners();
   }
 
   // Method to exchange data for funds

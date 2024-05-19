@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useRef, useEffect, ReactNode } from 'react';
+import { createContext, ReactNode, useContext, useEffect, useRef, useState } from 'react';
 import { CoreState } from '../../engine/core/CoreState';
 import { TaskService } from '../../engine/services/TaskService';
 
@@ -8,14 +8,15 @@ interface GameStateContextType {
   taskService: TaskService;
 }
 
-const GameStateContext = createContext<GameStateContextType | undefined>(undefined);
-
 interface GameStateProviderProps {
   children: ReactNode;
 }
 
+const GameStateContext = createContext<GameStateContextType | undefined>(undefined);
+
 function GameStateProvider({ children }: GameStateProviderProps): JSX.Element {
   const [coreState] = useState(new CoreState());
+  // TODO: taskService can now be accessed from coreState
   const [taskService] = useState(coreState.taskService);
   const requestRef = useRef<number | null>(null);
   const previousTimeRef = useRef<number | undefined>(undefined);
@@ -42,7 +43,7 @@ function GameStateProvider({ children }: GameStateProviderProps): JSX.Element {
         cancelAnimationFrame(requestRef.current);
       }
     };
-  }, []); // Empty array means the effect runs only once on mount
+  }); // Empty array means the effect runs only once on mount
 
   return (
     <GameStateContext.Provider value={{ coreState: coreState, taskService }}>

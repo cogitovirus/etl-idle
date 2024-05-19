@@ -1,13 +1,12 @@
-import * as React from 'react';
-import Stack from '@mui/material/Stack';
-import DataCollectionItem from '../data-collection-item/DataCollectionItem';
-import { useGameState } from '../../../contexts/GameStateContext';
-import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import { DataCollection } from '@engine/entities/DataCollection';
-import { DataCollectionService } from '@/engine/services/DataCollectionService';
+import Stack from '@mui/material/Stack';
+import { AnimatePresence, motion } from "framer-motion";
+import * as React from 'react';
+import { useGameState } from '../../../contexts/GameStateContext';
+import dynamic from 'next/dynamic'
 
 
-const dataCollectionService = new DataCollectionService();
+const NoSSRDataCollectionItem = dynamic(() => import('../data-collection-item/DataCollectionItem'), { ssr: false })
 
 const DataCollectionStack = React.forwardRef<HTMLDivElement, {}>(function DataCollectionStack(props, ref) {
   const { coreState } = useGameState();
@@ -24,8 +23,8 @@ const DataCollectionStack = React.forwardRef<HTMLDivElement, {}>(function DataCo
   }, [coreState]);
 
   const handleComplete = (dc: DataCollection) => {
-    dataCollectionService.completeDataCollection(coreState, dc);
-    dataCollectionService.generateNewCollection(coreState);
+    coreState.dataCollectionService.completeDataCollection(dc);
+    coreState.dataCollectionService.getAndPushNewCollection();
     setTimeout(() => {
       setDataCollections([...coreState.getDataCollections()]);
     }, 0);
@@ -36,7 +35,7 @@ const DataCollectionStack = React.forwardRef<HTMLDivElement, {}>(function DataCo
     <Stack {...props} spacing={1.5} ref={ref}>
       <AnimatePresence>
         {dataCollections.slice(currentIndex, currentIndex + 3).map((dataCollection, index) => (
-          <DataCollectionItem
+          <NoSSRDataCollectionItem
             key={dataCollection.id}
             dataCollection={dataCollection}
             isProcessing={index === 0}
@@ -49,7 +48,7 @@ const DataCollectionStack = React.forwardRef<HTMLDivElement, {}>(function DataCo
             layout
           />
         ))}
-      </AnimatePresence>    
+      </AnimatePresence>
     </Stack>
   );
 });
