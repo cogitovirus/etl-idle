@@ -1,8 +1,8 @@
-import { GameState } from '../core/GameState';
+import { CoreState } from '../core/CoreState';
 
 export interface Upgrade {
   id: string;
   name: string;
   cost: number;
-  effect: (state: GameState) => void;
+  effect: (state: CoreState) => void;
 }

@@ -1,6 +1,7 @@
 type StateChangeListener = () => void;
 
-export class BaseService {
+// TODO: notify listeners has gaps, sometimes it might not notify listeners of the change
+export class EventEmitter {
   private listeners: StateChangeListener[] = [];
 
   subscribe(listener: StateChangeListener) {
@@ -11,7 +12,7 @@ export class BaseService {
     this.listeners = this.listeners.filter(l => l !== listener);
   }
 
-  protected notifyListeners() {
+  notifyListeners() {
     this.listeners.forEach(listener => listener());
   }
 }

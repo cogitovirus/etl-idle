@@ -1,18 +1,18 @@
 import { v4 as uuid4 } from "uuid";
 import { Task } from "../entities/Task";
 import tasksJson from "../data/tasks.json";
-import { GameState } from "../core/GameState";
-import { BaseService } from "./BaseService";
+import { CoreState } from "../core/CoreState";
+import { EventEmitter } from "../core/EventEmitter";
 
 
-export class TaskService extends BaseService {
-  private gameState: GameState;
+export class TaskService extends EventEmitter {
+  private coreState: CoreState;
   private allTasks: Task[];
   private unlockedTasks: Task[];
 
-  constructor(gameState: GameState) {
+  constructor(coreState: CoreState) {
     super();
-    this.gameState = gameState;
+    this.coreState = coreState;
     this.allTasks = this.loadTasks();
     this.unlockedTasks = this.allTasks.filter(task => !task.prerequisites?.length);
     this.notifyListeners();
@@ -53,11 +53,11 @@ export class TaskService extends BaseService {
 
   startTask(taskId: string) {
     const task = this.getUnlockedTasks().find(t => t.id === taskId);
-    if (task && this.gameState.canAfford(task.costs)) {
+    if (task && this.coreState.canAfford(task.costs)) {
       this.deactivateAllTasks();
       task.isActive = true;
       task.status = 'In Progress';
-      this.gameState.deductFunds(task.costs);
+      this.coreState.deductFunds(task.costs);
       this.notifyListeners();
     }
   }
@@ -76,9 +76,9 @@ export class TaskService extends BaseService {
         task.timeLeft -= deltaTimeInSeconds;
         if (task.timeLeft <= 0) {
           this.completeTask(task.id);
-          if (this.gameState.canAfford(task.costs)) {
+          if (this.coreState.canAfford(task.costs)) {
             task.timeLeft = task.iterationTime; // Reset for next iteration
-            this.gameState.deductFunds(task.costs);
+            this.coreState.deductFunds(task.costs);
           } else {
             task.isActive = false;
             task.status = 'Not Started';
@@ -96,16 +96,16 @@ export class TaskService extends BaseService {
       // Apply results
       task.results.forEach(result => {
         if (result.type === 'funds') {
-          this.gameState.addFunds(result.amount);
+          this.coreState.addFunds(result.amount);
         } else if (result.type === 'data') {
-          this.gameState.addToWarehouse(result.amount);
+          this.coreState.addToWarehouse(result.amount);
         }
       });
 
       // Apply modifiers
       task.modifiers.forEach(modifier => {
         if (modifier.type === 'speed') {
-          this.gameState.increaseProcessingSpeed(modifier.value);
+          this.coreState.increaseProcessingSpeed(modifier.value);
         }
         // other modifier types...
       });
@@ -113,7 +113,7 @@ export class TaskService extends BaseService {
 
       task.xp += task.xp; // Increase XP for the task
       this.levelUpTask(task);
-      this.gameState.notifyListeners();
+      this.coreState.notifyListeners();
       this.notifyListeners();
     }
   }

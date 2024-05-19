@@ -3,11 +3,12 @@ import { DataCollection } from "../entities/DataCollection";
 import { Upgrade } from "../entities/Upgrade";
 import { TaskService } from "../services/TaskService";
 import { Cost } from "../entities/Cost";
+import { EventEmitter } from "./EventEmitter";
 
 
 type StateChangeListener = () => void;
 
-export class GameState {
+export class CoreState extends EventEmitter {
   private funds: number;
   private data: number;
   private processingSpeed: number; // Processing speed in Mb/s
@@ -28,10 +29,9 @@ export class GameState {
   // private fundsVisible: boolean;
   // private storageVisible: boolean;
 
-  // TODO: notify listeners has gaps, sometimes it might not notify listeners of the change
-  private listeners: StateChangeListener[] = [];
 
   constructor() {
+    super();
     this.funds = 0;
     this.data = 0;
     this.processingSpeed = 1; // Initial processing speed
@@ -133,20 +133,5 @@ export class GameState {
     const deltaTimeInSeconds = deltaTime / 1000;
     this.taskService.processTasks(deltaTimeInSeconds);
     this.taskService.checkForUnlockedTasks();
-  }
-
-
-  // subscribe and unsubscribe methods for listeners
-
-  subscribe(listener: StateChangeListener) {
-    this.listeners.push(listener);
-  }
-
-  unsubscribe(listener: StateChangeListener) {
-    this.listeners = this.listeners.filter(l => l !== listener);
-  }
-
-  notifyListeners() {
-    this.listeners.forEach(listener => listener());
   }
 }

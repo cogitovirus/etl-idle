@@ -10,17 +10,17 @@ interface GeneratorProps {
 }
 
 export function Generator({ id, name, rate, cost }: GeneratorProps) {
-  const { gameState } = useGameState();
+  const { coreState: coreState } = useGameState();
 
   const handlePurchase = () => {
-    gameState.addDataCollection({
+    coreState.addDataCollection({
       id,
       name,
       dataSize: rate,
       processed: 0,
       cost,
     });
-    gameState.deductFunds(cost);
+    coreState.deductFunds(cost);
   };
 
   return (

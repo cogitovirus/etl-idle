@@ -9,7 +9,7 @@ import { ControlPanel } from '../control/control-panel/ControlPanel';
 
 
 export function Game() {
-  const { gameState } = useGameState();
+  const { coreState } = useGameState();
 
   return (
     <Grid

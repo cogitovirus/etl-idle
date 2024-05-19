@@ -1,16 +1,16 @@
 import { DataCollection } from "../entities/DataCollection";
-import { GameState } from "../core/GameState";
+import { CoreState } from "../core/CoreState";
 import { v4 as uuid4 } from "uuid";
 
 
 export class DataCollectionService {
-  public completeDataCollection(gameState: GameState, dc: DataCollection) {
-    gameState.addToWarehouse(dc.dataSize);
-    gameState.removeDataCollection(dc.id);
+  public completeDataCollection(coreState: CoreState, dc: DataCollection) {
+    coreState.addToWarehouse(dc.dataSize);
+    coreState.removeDataCollection(dc.id);
   }
 
-  generateNewCollection(gameState: GameState) {
-    const dataCollections = gameState.getDataCollections();
+  generateNewCollection(coreState: CoreState) {
+    const dataCollections = coreState.getDataCollections();
     const lastCollection = dataCollections[dataCollections.length - 1];
     const newDataCollection: DataCollection = {
       id: uuid4(),
@@ -18,6 +18,6 @@ export class DataCollectionService {
       dataSize: lastCollection ? lastCollection.dataSize + 1 : 1, // Increase difficulty
     };
 
-    gameState.addDataCollection(newDataCollection);
+    coreState.addDataCollection(newDataCollection);
   }
 }
