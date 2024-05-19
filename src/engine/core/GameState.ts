@@ -1,6 +1,8 @@
 import { v4 as uuid4 } from "uuid";
 import { DataCollection } from "../entities/DataCollection";
 import { Upgrade } from "../entities/Upgrade";
+import { TaskService } from "../services/TaskService";
+
 
 type StateChangeListener = () => void;
 
@@ -10,7 +12,11 @@ export class GameState {
   private processingSpeed: number; // Processing speed in Mb/s
   private dataWarehouseCapacity: number; // Capacity in Mb
   private dataCollections: DataCollection[];
-  private upgrades: Upgrade[];
+  // Tasks
+  taskService: TaskService;
+  // Upgrades
+  private allUpgrades: Upgrade[];
+  private unlockedUpgrades: Upgrade[];
   // visibility modifiers
   private commandLineVisible: boolean;
   private dataCollectionVisible: boolean;
@@ -32,9 +38,11 @@ export class GameState {
       { id: uuid4(), name: 'Data Collection 2', dataSize: 4 },
       { id: uuid4(), name: 'Data Collection 3', dataSize: 5 },
     ];
-    this.upgrades = [];
+    this.allUpgrades = [];
+    this.unlockedUpgrades = [];
     this.commandLineVisible = true;
     this.dataCollectionVisible = true;
+    this.taskService = new TaskService(this);
   }
 
   // Getters
@@ -43,14 +51,15 @@ export class GameState {
   getProcessingSpeed(): number { return this.processingSpeed; }
   getDataWarehouseCapacity(): number { return this.dataWarehouseCapacity; }
   getDataCollections(): DataCollection[] { return this.dataCollections; }
-  getUpgrades(): Upgrade[] { return this.upgrades; }
+  getUpgrades(): Upgrade[] { return this.allUpgrades; }
 
   // Setters
   addFunds(amount: number) {
     this.funds += amount;
     this.notifyListeners();
   }
-  deductFunds(cost: number) {
+  deductFunds(cost: number | undefined) {
+    if (!cost) return;
     this.funds -= cost;
     this.notifyListeners();
   }
@@ -58,10 +67,11 @@ export class GameState {
   removeDataCollection(id: string) {
     this.dataCollections = this.dataCollections.filter(collection => collection.id !== id);
   }
-  addUpgrade(upgrade: Upgrade) { this.upgrades.push(upgrade); }
+  addUpgrade(upgrade: Upgrade) { this.allUpgrades.push(upgrade); }
 
   // Check if the player can afford a cost
-  canAfford(cost: number): boolean {
+  canAfford(cost: number | undefined): boolean {
+    if (cost === undefined) return true;
     return this.funds >= cost;
   }
 
@@ -94,6 +104,16 @@ export class GameState {
     this.notifyListeners();
   }
 
+  // Update game state
+  update(deltaTime: number) {
+    const deltaTimeInSeconds = deltaTime / 1000;
+    this.taskService.processTasks(deltaTimeInSeconds);
+    this.taskService.checkForUnlockedTasks();
+  }
+
+
+  // subscribe and unsubscribe methods for listeners
+
   subscribe(listener: StateChangeListener) {
     this.listeners.push(listener);
   }
@@ -102,7 +122,7 @@ export class GameState {
     this.listeners = this.listeners.filter(l => l !== listener);
   }
 
-  private notifyListeners() {
+  notifyListeners() {
     this.listeners.forEach(listener => listener());
   }
 }

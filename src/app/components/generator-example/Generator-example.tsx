@@ -10,7 +10,7 @@ interface GeneratorProps {
 }
 
 export function Generator({ id, name, rate, cost }: GeneratorProps) {
-  const gameState = useGameState();
+  const { gameState } = useGameState();
 
   const handlePurchase = () => {
     gameState.addDataCollection({

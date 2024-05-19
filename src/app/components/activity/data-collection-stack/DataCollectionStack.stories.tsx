@@ -1,7 +1,7 @@
 import React from 'react';
 import { Meta, StoryObj } from '@storybook/react';
 import DataCollectionStack from './DataCollectionStack';
-import { GameStateProvider, useGameState } from '../../contexts/GameStateContext';
+import { GameStateProvider, useGameState } from '../../../contexts/GameStateContext';
 import { Box } from '@mui/material';
 import { action } from '@storybook/addon-actions';
 

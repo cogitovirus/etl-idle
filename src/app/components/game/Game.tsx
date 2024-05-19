@@ -3,13 +3,13 @@ import { useGameState } from '@app/contexts/GameStateContext';
 import { Box, Grid, Paper, Typography } from '@mui/material';
 import Generator from '@app/components/generator-example/Generator-example';
 import Upgrade from '@app/components/upgrade/Upgrade';
-import DataCollectionStack from "@app/components/data-collection-stack/DataCollectionStack";
+import DataCollectionStack from "@/app/components/activity/data-collection-stack/DataCollectionStack";
 import { ResourceOverview } from '../resource-overview/ResourceOverview';
 import { ControlPanel } from '../control/control-panel/ControlPanel';
 
 
 export function Game() {
-  const gameState = useGameState();
+  const { gameState } = useGameState();
 
   return (
     <Grid

@@ -34,11 +34,12 @@ const DataCollectionItem = React.forwardRef<HTMLDivElement, DataCollectionProps>
   const [processed, setProcessed] = React.useState(0);
 
   React.useEffect(() => {
+    let timer: NodeJS.Timeout;
     // Reset processed data when a new data collection starts
     setProcessed(0);
     if (!isProcessing) return;
 
-    const timer = setInterval(() => {
+    timer = setInterval(() => {
       setProcessed((prevProcessed) => {
         const nextProcessed = prevProcessed + processingSpeed;
         if (nextProcessed >= dataCollection.dataSize) {
@@ -51,7 +52,7 @@ const DataCollectionItem = React.forwardRef<HTMLDivElement, DataCollectionProps>
     }, 1000);
 
     return () => {
-      clearInterval(timer);
+      if (timer) clearInterval(timer);
     };
   }, [isProcessing, processingSpeed, dataCollection, onComplete]);
 
