@@ -74,7 +74,7 @@ const theme = createTheme({
           // borderRadius: '8px', // Rounded corners for buttons
           // backgroundColor: grey[800], // Background color for buttons
           color: grey[100], // Text color for buttons
-          border: `1px solid ${blue[400]}`, // Border color for buttons
+          border: `1px solid ${blue[700]}`, // Border color for buttons
           fontFamily: '"VT323", monospace', // Match the font family of h6
           fontSize: '1rem', // Match the font size of h6
           textTransform: 'none', // Ensure text is not all caps
@@ -96,7 +96,7 @@ const theme = createTheme({
           // },
         },
         containedPrimary: {
-          backgroundColor: '#f5f5f5', // Primary contained button background color
+          backgroundColor: blue[100], // Primary contained button background color
           color: grey[800], // Primary contained button text color
           boxShadow: 'none', // Disable shadow
           '&:hover': {
@@ -155,10 +155,12 @@ const theme = createTheme({
     MuiTooltip: {
       styleOverrides: {
         tooltip: {
-          fontFamily: '"Courier New", Courier, monospace', // Retro font style for tooltip
-          backgroundColor: grey[700], // Tooltip background color
-          color: grey[100], // Tooltip text color
+          // fontFamily: '"Courier New", Courier, monospace', // Retro font style for tooltip
+          backgroundColor: '#FFFFFF', // Tooltip background color
+          color: grey[800], // Tooltip text color
           fontSize: '0.8rem', // Slightly smaller font size
+          border: `1px solid ${grey[700]}`, // Border for cards
+
         },
         arrow: {
           color: grey[700], // Tooltip arrow color

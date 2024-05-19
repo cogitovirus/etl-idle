@@ -53,11 +53,11 @@ export class TaskService extends BaseService {
 
   startTask(taskId: string) {
     const task = this.getUnlockedTasks().find(t => t.id === taskId);
-    if (task && this.gameState.canAfford(task.cost)) {
+    if (task && this.gameState.canAfford(task.costs)) {
       this.deactivateAllTasks();
       task.isActive = true;
       task.status = 'In Progress';
-      this.gameState.deductFunds(task.cost);
+      this.gameState.deductFunds(task.costs);
       this.notifyListeners();
     }
   }
@@ -76,7 +76,14 @@ export class TaskService extends BaseService {
         task.timeLeft -= deltaTimeInSeconds;
         if (task.timeLeft <= 0) {
           this.completeTask(task.id);
-          task.timeLeft = task.iterationTime; // Reset for next iteration
+          if (this.gameState.canAfford(task.costs)) {
+            task.timeLeft = task.iterationTime; // Reset for next iteration
+            this.gameState.deductFunds(task.costs);
+          } else {
+            task.isActive = false;
+            task.status = 'Not Started';
+          }
+          return;
         }
       }
     });

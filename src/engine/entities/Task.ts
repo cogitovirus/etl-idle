@@ -1,13 +1,14 @@
 import { Result } from './Result';
 import { Modifier } from './Modifier';
+import { Cost } from './Cost';
 
 export interface Task {
   id: string;
   name: string;
   quote: string;
   description: string;
-  cost?: number;
-  processCost?: number;
+  costs?: Cost[];
+  processCosts?: Cost[];
   results: Result[];
   modifiers: Modifier[];
   iterationTime: number; // Duration in seconds for each iteration

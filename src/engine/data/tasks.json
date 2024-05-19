@@ -4,8 +4,8 @@
     "name": "Streamline Data Flow",
     "quote": "It's not glamorous, but someone's got to do it.",
     "description": "Implement measures to improve processing efficiency.",
-    "cost": 0,
-    "processCost": 0,
+    "costs": [],
+    "processCosts": [],
     "results": [{ "type": "data", "amount": 20 }],
     "modifiers": [{ "type": "speed", "value": 0.01 }],
     "iterationTime": 10,
@@ -15,10 +15,12 @@
   {
     "id": "9a1b5d7e-5678-4b32-8a2b-5a1e2b5a1e2b",
     "name": "Data Brokerage",
-    "quote": "Turning ones and zeros into ones and zeros in my bank account.",
+    "quote": "Turning ones and zeros into ones and zeros in your bank account.",
     "description": "Convert your processed data into cold, hard cash.",
-    "cost": 10,
-    "processCost": 0,
+    "costs": [
+      { "type": "data", "amount": 10 }
+    ],
+    "processCosts": [],
     "results": [{ "type": "funds", "amount": 10 }],
     "modifiers": [],
     "iterationTime": 3,

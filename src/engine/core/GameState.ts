@@ -2,6 +2,7 @@ import { v4 as uuid4 } from "uuid";
 import { DataCollection } from "../entities/DataCollection";
 import { Upgrade } from "../entities/Upgrade";
 import { TaskService } from "../services/TaskService";
+import { Cost } from "../entities/Cost";
 
 
 type StateChangeListener = () => void;
@@ -17,6 +18,8 @@ export class GameState {
   // Upgrades
   private allUpgrades: Upgrade[];
   private unlockedUpgrades: Upgrade[];
+  // Innovation Credits
+  private innovationCredits: number;
   // visibility modifiers
   private commandLineVisible: boolean;
   private dataCollectionVisible: boolean;
@@ -33,6 +36,7 @@ export class GameState {
     this.data = 0;
     this.processingSpeed = 1; // Initial processing speed
     this.dataWarehouseCapacity = 10 * 1024; // 10 Gb in Mb
+    this.innovationCredits = 0;
     this.dataCollections = [ // seed data collections
       { id: uuid4(), name: 'Data Collection 1', dataSize: 3 },
       { id: uuid4(), name: 'Data Collection 2', dataSize: 4 },
@@ -52,29 +56,49 @@ export class GameState {
   getDataWarehouseCapacity(): number { return this.dataWarehouseCapacity; }
   getDataCollections(): DataCollection[] { return this.dataCollections; }
   getUpgrades(): Upgrade[] { return this.allUpgrades; }
+  getInnovationCredits(): number { return this.innovationCredits; }
 
   // Setters
   addFunds(amount: number) {
     this.funds += amount;
     this.notifyListeners();
   }
-  deductFunds(cost: number | undefined) {
-    if (!cost) return;
-    this.funds -= cost;
+
+  deductFunds(costs?: Cost[]) {
+    if (!costs) return;
+    costs.forEach(cost => {
+      if (cost.type === 'funds') {
+        this.funds -= cost.amount;
+      } else if (cost.type === 'data') {
+        this.data -= cost.amount;
+      } else if (cost.type === 'innovationCredits') {
+        this.innovationCredits -= cost.amount; // Assuming you have an innovationCredits property
+      }
+    });
     this.notifyListeners();
   }
+
   addDataCollection(dataCollection: DataCollection) { this.dataCollections.push(dataCollection); }
   removeDataCollection(id: string) {
     this.dataCollections = this.dataCollections.filter(collection => collection.id !== id);
   }
+
   addUpgrade(upgrade: Upgrade) { this.allUpgrades.push(upgrade); }
 
   // Check if the player can afford a cost
-  canAfford(cost: number | undefined): boolean {
-    if (cost === undefined) return true;
-    return this.funds >= cost;
+  canAfford(costs?: Cost[]): boolean {
+    if (!costs) return true;
+    return costs.every(cost => {
+      if (cost.type === 'funds') {
+        return this.funds >= cost.amount;
+      } else if (cost.type === 'data') {
+        return this.data >= cost.amount;
+      } else if (cost.type === 'innovationCredits') {
+        return this.innovationCredits >= cost.amount;
+      }
+      return false;
+    });
   }
-
   // Method to add processed data to warehouse
   addToWarehouse(dataSize: number) {
     if (this.data + dataSize <= this.dataWarehouseCapacity) {

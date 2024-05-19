@@ -9,6 +9,7 @@ function useResourceOverview(gameState: GameState) {
   const [data, setData] = useState(gameState.getData());
   const [processingSpeed, setProcessingSpeed] = useState(gameState.getProcessingSpeed());
   const [dataWarehouseCapacity, setDataWarehouseCapacity] = useState(gameState.getDataWarehouseCapacity());
+  const [innovationCredits, setInnovationCredits] = useState(gameState.getInnovationCredits());
 
   useEffect(() => {
     const handleStateChange = () => {
@@ -19,6 +20,7 @@ function useResourceOverview(gameState: GameState) {
         setData(gameState.getData());
         setProcessingSpeed(gameState.getProcessingSpeed());
         setDataWarehouseCapacity(gameState.getDataWarehouseCapacity());
+        setInnovationCredits(gameState.getInnovationCredits());
       }, 0);
     };
 
@@ -29,7 +31,7 @@ function useResourceOverview(gameState: GameState) {
     };
   }, [gameState]);
 
-  return { funds, data, processingSpeed, dataWarehouseCapacity };
+  return { funds, data, processingSpeed, dataWarehouseCapacity, innovationCredits };
 }
 
 function AnimatedNumber({ value, roundModifier }: { value: number, roundModifier: number}) {
@@ -48,13 +50,14 @@ function AnimatedNumber({ value, roundModifier }: { value: number, roundModifier
 
 export function ResourceOverview() {
   const { gameState } = useGameState();
-  const { funds, data, processingSpeed, dataWarehouseCapacity } = useResourceOverview(gameState);
+  const { funds, data, processingSpeed, dataWarehouseCapacity, innovationCredits } = useResourceOverview(gameState);
 
   return (
     <Box>
       <Typography variant="h6">Funds: $<AnimatedNumber value={funds} roundModifier={1} /></Typography>
       <Typography variant="h6">Data Warehouse Usage: <AnimatedNumber value={data} roundModifier={1} />/<AnimatedNumber value={dataWarehouseCapacity} roundModifier={1} /> Mb</Typography>
       <Typography variant="h6">Processing Speed: <AnimatedNumber value={processingSpeed} roundModifier={100} /> Mb/s</Typography>
+      <Typography variant="h6">Innovation Credits: (λ)<AnimatedNumber value={innovationCredits} roundModifier={1} /></Typography>
     </Box>
   );
 }
