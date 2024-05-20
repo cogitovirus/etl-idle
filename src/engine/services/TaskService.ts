@@ -2,20 +2,18 @@ import { v4 as uuid4 } from "uuid";
 import { Task } from "../entities/Task";
 import tasksJson from "../data/tasks.json";
 import { CoreState } from "../core/CoreState";
-import { EventEmitter } from "../core/EventEmitter";
 
 
-export class TaskService extends EventEmitter {
+export class TaskService {
   private coreState: CoreState;
   private allTasks: Task[];
   private unlockedTasks: Task[];
 
   constructor(coreState: CoreState) {
-    super();
     this.coreState = coreState;
     this.allTasks = this.loadTasks();
     this.unlockedTasks = this.allTasks.filter(task => !task.prerequisites?.length);
-    this.notifyListeners();
+    this.coreState.notifyStateChange();
   }
 
   loadTasks(): Task[] {
@@ -44,7 +42,7 @@ export class TaskService extends EventEmitter {
     });
 
     this.unlockedTasks = [...this.unlockedTasks, ...newlyUnlockedTasks];
-    this.notifyListeners();
+    this.coreState.notifyStateChange();
   }
 
   getUnlockedTasks(): Task[] {
@@ -58,7 +56,7 @@ export class TaskService extends EventEmitter {
       task.isActive = true;
       task.status = 'In Progress';
       this.coreState.deductFunds(task.costs);
-      this.notifyListeners();
+      this.coreState.notifyStateChange();
     }
   }
 
@@ -87,7 +85,7 @@ export class TaskService extends EventEmitter {
         }
       }
     });
-    this.notifyListeners();
+    this.coreState.notifyStateChange();
   }
 
   completeTask(taskId: string) {
@@ -98,7 +96,7 @@ export class TaskService extends EventEmitter {
         if (result.type === 'funds') {
           this.coreState.addFunds(result.amount);
         } else if (result.type === 'data') {
-          this.coreState.addToWarehouse(result.amount);
+          this.coreState.addDataToWarehouse(result.amount);
         }
       });
 
@@ -110,11 +108,9 @@ export class TaskService extends EventEmitter {
         // other modifier types...
       });
 
-
       task.xp += task.xp; // Increase XP for the task
       this.levelUpTask(task);
-      this.coreState.notifyListeners();
-      this.notifyListeners();
+      this.coreState.notifyStateChange();
     }
   }
 

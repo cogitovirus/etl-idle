@@ -33,23 +33,23 @@ const renderModifiers = (modifiers: Modifier[]) => {
 };
 
 export function TaskList() {
-  const { taskService } = useGameState();
-  const [unlockedTasks, setUnlockedTasks] = useState<Task[]>(taskService.getUnlockedTasks());
+  const { coreState } = useGameState();
+  const [unlockedTasks, setUnlockedTasks] = useState<Task[]>(coreState.taskService.getUnlockedTasks());
 
   useEffect(() => {
     const handleStateChange = () => {
-      setUnlockedTasks(taskService.getUnlockedTasks());
+      setUnlockedTasks(coreState.taskService.getUnlockedTasks());
     };
 
-    taskService.subscribe(handleStateChange);
+    coreState.subscribeToStateChanges(handleStateChange);
 
     return () => {
-      taskService.unsubscribe(handleStateChange);
+      coreState.unsubscribeFromStateChanges(handleStateChange);
     };
-  }, [taskService]);
+  }, [coreState]);
 
   const handleStartTask = (taskId: string) => {
-    taskService.startTask(taskId);
+    coreState.taskService.startTask(taskId);
   };
 
   return (

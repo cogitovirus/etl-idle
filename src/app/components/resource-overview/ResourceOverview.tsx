@@ -24,10 +24,10 @@ function useResourceOverview(coreState: CoreState) {
       }, 0);
     };
 
-    coreState.subscribe(handleStateChange);
+    coreState.subscribeToStateChanges(handleStateChange);
 
     return () => {
-      coreState.unsubscribe(handleStateChange);
+      coreState.unsubscribeFromStateChanges(handleStateChange);
     };
   }, [coreState]);
 

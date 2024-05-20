@@ -4,12 +4,11 @@ import { DataCollectionService } from "../services/DataCollectionService";
 import { Upgrade } from "../entities/Upgrade";
 import { TaskService } from "../services/TaskService";
 import { Cost } from "../entities/Cost";
-import { EventEmitter } from "./EventEmitter";
+import { StateChangeEventEmitter } from "./StateChangeEventEmitter";
+import { NarrativeEventEmitter } from "./NarrativeEventEmitter";
 
 
-type StateChangeListener = () => void;
-
-export class CoreState extends EventEmitter {
+export class CoreState {
   private funds: number;
   private data: number;
   private processingSpeed: number; // Processing speed in Mb/s
@@ -26,20 +25,20 @@ export class CoreState extends EventEmitter {
   // visibility modifiers
   private commandLineVisible: boolean;
   private dataCollectionVisible: boolean;
-  // private tasksVisible: boolean;
-  // private upgradesVisible: boolean;
-  // private fundsVisible: boolean;
-  // private storageVisible: boolean;
-
+  // Event emitters
+  stateChangeEmitter: StateChangeEventEmitter;
+  narrativeEventEmitter: NarrativeEventEmitter;
 
   constructor() {
-    super();
     this.funds = 0;
     this.data = 0;
     this.processingSpeed = 1; // Initial processing speed
     this.dataWarehouseCapacity = 10 * 1024; // 10 Gb in Mb
     this.innovationCredits = 0;
-    
+
+    this.stateChangeEmitter = new StateChangeEventEmitter();
+    this.narrativeEventEmitter = new NarrativeEventEmitter();
+
     this.allUpgrades = [];
     this.unlockedUpgrades = [];
     this.commandLineVisible = true;
@@ -49,34 +48,56 @@ export class CoreState extends EventEmitter {
     this.dataCollections = Array.from({ length: 3 }).map(() => this.dataCollectionService.generateRandomDataCollection());
   }
 
+  // Narrative Event Methods
+  subscribeToNarrative(listener: (message: string) => void) {
+    this.narrativeEventEmitter.subscribe(listener);
+  }
+
+  notifyNarrative(message: string) {
+    this.narrativeEventEmitter.notifyListeners(message);
+  }
+
+  // State Change Event Methods
+  subscribeToStateChanges(listener: () => void) {
+    this.stateChangeEmitter.subscribe(listener);
+  }
+
+  unsubscribeFromStateChanges(listener: () => void) {
+    this.stateChangeEmitter.unsubscribe(listener);
+  }
+
+  notifyStateChange() {
+    this.stateChangeEmitter.notifyListeners();
+  }
+
   // Data Collections
   getDataCollections(): DataCollection[] { return this.dataCollections; }
   addDataCollection(dataCollection: DataCollection) { this.dataCollections.push(dataCollection); }
   removeDataCollection(id: string) {
     this.dataCollections = this.dataCollections.filter(collection => collection.id !== id);
   }
-  // Method to add processed data to warehouse
-  addToWarehouse(dataSize: number) {
+
+  addDataToWarehouse(dataSize: number) {
     if (this.data + dataSize <= this.dataWarehouseCapacity) {
       this.data += dataSize;
     } else {
       this.data = this.dataWarehouseCapacity; // Cap at warehouse capacity
     }
-    this.notifyListeners();
+    this.notifyStateChange();
   }
 
   // Getters
-  getFunds(): number { return this.funds; }
   getData(): number { return this.data; }
   getProcessingSpeed(): number { return this.processingSpeed; }
   getDataWarehouseCapacity(): number { return this.dataWarehouseCapacity; }
   getUpgrades(): Upgrade[] { return this.allUpgrades; }
   getInnovationCredits(): number { return this.innovationCredits; }
+  // Funds
+  getFunds(): number { return this.funds; }
 
-  // Setters
   addFunds(amount: number) {
     this.funds += amount;
-    this.notifyListeners();
+    this.notifyStateChange();
   }
 
   deductFunds(costs?: Cost[]) {
@@ -90,12 +111,8 @@ export class CoreState extends EventEmitter {
         this.innovationCredits -= cost.amount; // Assuming you have an innovationCredits property
       }
     });
-    this.notifyListeners();
+    this.notifyStateChange();
   }
-
-
-
-  addUpgrade(upgrade: Upgrade) { this.allUpgrades.push(upgrade); }
 
   // Check if the player can afford a cost
   canAfford(costs?: Cost[]): boolean {
@@ -112,6 +129,10 @@ export class CoreState extends EventEmitter {
     });
   }
 
+
+  addUpgrade(upgrade: Upgrade) { this.allUpgrades.push(upgrade); }
+
+
   // Method to exchange data for funds
   exchangeDataForFunds(amount: number) {
     if (this.data >= amount) {
@@ -123,16 +144,16 @@ export class CoreState extends EventEmitter {
   // Method to increase processing speed
   increaseProcessingSpeed(amount: number) {
     this.processingSpeed += amount;
-    this.notifyListeners();
+    this.notifyStateChange();
   }
 
   increaseWarehouseCapacity(amount: number) {
     this.dataWarehouseCapacity += amount;
-    this.notifyListeners();
+    this.notifyStateChange();
   }
 
-  // Update game state
-  update(deltaTime: number) {
+  // TODO: I don't even remember why I need this - inspect
+  updateGameState(deltaTime: number) {
     const deltaTimeInSeconds = deltaTime / 1000;
     this.taskService.processTasks(deltaTimeInSeconds);
     this.taskService.checkForUnlockedTasks();

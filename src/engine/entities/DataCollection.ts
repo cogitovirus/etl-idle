@@ -2,7 +2,7 @@ import dynamicIconImports from "lucide-react/dynamicIconImports";
 
 export enum CompressionType {
   NONE = 'none',
-  GZIP = 'gzip',
+  GZIP = 'gz',
   SNAPPY = 'snappy',
   LZ4 = 'lz4',
   ZIP = 'zip',
@@ -16,7 +16,7 @@ export const fileTypeIconMap: { [key: string]: keyof typeof dynamicIconImports }
   'txt': 'file-text',
   'bin': 'binary',
   'dat': 'file-cog',
-  'log': 'pen-line',
+  'log': 'file-search-2',
   'xml': 'file-code',
   'ebcdic': 'file-digit',
 };

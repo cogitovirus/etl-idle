@@ -1,4 +1,3 @@
-// utils/randomNameGenerator.ts
 const adjectives = ["Quick", "Excited", "Bright", "Happy", "Bold"];
 const nouns = ["Lion", "Dog", "Cat", "Tiger", "Elephant"];
 

@@ -19,9 +19,9 @@ export class DataCollectionService {
   }
 
   public completeDataCollection(dc: DataCollection) {
-    this.coreState.addToWarehouse(dc.dataSize);
+    this.coreState.addDataToWarehouse(dc.dataSize);
     this.coreState.removeDataCollection(dc.id);
-    this.coreState.notifyListeners();
+    this.coreState.notifyStateChange();
   }
 
   public getAndPushNewCollection() {
@@ -56,6 +56,7 @@ export class DataCollectionService {
     return Math.floor(Math.random() * 50) + 1; // Example: data size between 1 and 50 Mb
   }
 
+  // TODO: implement color palette generation
   getColorPaletteForType(): string {
     return 'colorPalette';
   }

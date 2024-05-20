@@ -18,7 +18,7 @@ export function Upgrade({ id, name, cost }: UpgradeProps){
   const gameState = context;
 
   const handlePurchase = () => {
-    gameState.buyUpgrade(id);
+    // gameState.buyUpgrade(id);
   };
 
   return (

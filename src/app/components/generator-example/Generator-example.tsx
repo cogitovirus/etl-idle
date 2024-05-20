@@ -13,14 +13,14 @@ export function Generator({ id, name, rate, cost }: GeneratorProps) {
   const { coreState: coreState } = useGameState();
 
   const handlePurchase = () => {
-    coreState.addDataCollection({
-      id,
-      name,
-      dataSize: rate,
-      processed: 0,
-      cost,
-    });
-    coreState.deductFunds(cost);
+    // coreState.addDataCollection({
+    //   id,
+    //   name,
+    //   dataSize: rate,
+    //   processed: 0,
+    //   cost,
+    // });
+    // coreState.deductFunds(cost);
   };
 
   return (

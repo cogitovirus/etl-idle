@@ -1,11 +1,9 @@
 import { createContext, ReactNode, useContext, useEffect, useRef, useState } from 'react';
 import { CoreState } from '../../engine/core/CoreState';
-import { TaskService } from '../../engine/services/TaskService';
 
 
 interface GameStateContextType {
   coreState: CoreState;
-  taskService: TaskService;
 }
 
 interface GameStateProviderProps {
@@ -16,8 +14,6 @@ const GameStateContext = createContext<GameStateContextType | undefined>(undefin
 
 function GameStateProvider({ children }: GameStateProviderProps): JSX.Element {
   const [coreState] = useState(new CoreState());
-  // TODO: taskService can now be accessed from coreState
-  const [taskService] = useState(coreState.taskService);
   const requestRef = useRef<number | null>(null);
   const previousTimeRef = useRef<number | undefined>(undefined);
 
@@ -26,7 +22,7 @@ function GameStateProvider({ children }: GameStateProviderProps): JSX.Element {
       const deltaTime = timestamp - previousTimeRef.current;
       // Update only every 200ms
       if (deltaTime > 200) {
-        coreState.update(deltaTime);
+        coreState.updateGameState(deltaTime);
         previousTimeRef.current = timestamp;
       }
     } else {
@@ -46,7 +42,7 @@ function GameStateProvider({ children }: GameStateProviderProps): JSX.Element {
   }); // Empty array means the effect runs only once on mount
 
   return (
-    <GameStateContext.Provider value={{ coreState: coreState, taskService }}>
+    <GameStateContext.Provider value={{ coreState: coreState }}>
       {children}
     </GameStateContext.Provider>
   );
