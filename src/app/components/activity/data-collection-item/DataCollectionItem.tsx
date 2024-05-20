@@ -1,8 +1,8 @@
-import * as React from 'react';
-import { Typography, Box, Card, CardContent } from '@mui/material';
+import { DataCollection } from '@/engine/entities/DataCollection';
+import { Box, Card, CardContent, Typography } from '@mui/material';
 import LinearProgress, { LinearProgressProps } from '@mui/material/LinearProgress';
 import { motion } from "framer-motion";
-import { DataCollection } from '@/engine/entities/DataCollection';
+import * as React from 'react';
 import Icon from '../../common/icon/Icon';
 
 

@@ -1,7 +1,7 @@
 import { Box, Tooltip, Typography } from "@mui/material";
-import { useGameState } from '../../../contexts/GameStateContext';
+import { CoreStateContext } from '../../../contexts/GameStateContext';
 import { Task } from "@/engine/entities/Task";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import AnimatedButton from "@app/components/common"
 import { Cost } from "@/engine/entities/Cost";
 import { Result } from "@/engine/entities/Result";
@@ -33,7 +33,7 @@ const renderModifiers = (modifiers: Modifier[]) => {
 };
 
 export function TaskList() {
-  const { coreState } = useGameState();
+  const coreState = useContext(CoreStateContext);
   const [unlockedTasks, setUnlockedTasks] = useState<Task[]>(coreState.taskService.getUnlockedTasks());
 
   useEffect(() => {

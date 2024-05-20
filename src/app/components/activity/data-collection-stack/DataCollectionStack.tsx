@@ -1,17 +1,17 @@
 import { DataCollection } from '@engine/entities/DataCollection';
 import Stack from '@mui/material/Stack';
 import { AnimatePresence, motion } from "framer-motion";
+import dynamic from 'next/dynamic';
 import * as React from 'react';
-import { useGameState } from '../../../contexts/GameStateContext';
-import dynamic from 'next/dynamic'
+import { CoreStateContext } from '../../../contexts/GameStateContext';
+import { useContext } from 'react';
 
 
 const NoSSRDataCollectionItem = dynamic(() => import('../data-collection-item/DataCollectionItem'), { ssr: false })
 
 const DataCollectionStack = React.forwardRef<HTMLDivElement, {}>(function DataCollectionStack(props, ref) {
-  const { coreState } = useGameState();
+  const coreState = useContext(CoreStateContext);
   const [dataCollections, setDataCollections] = React.useState<DataCollection[]>(coreState.getDataCollections());
-  const [currentIndex, setCurrentIndex] = React.useState(0);
 
   React.useEffect(() => {
     // Sync dataCollections with the gameState whenever gameState changes
@@ -28,13 +28,12 @@ const DataCollectionStack = React.forwardRef<HTMLDivElement, {}>(function DataCo
     setTimeout(() => {
       setDataCollections([...coreState.getDataCollections()]);
     }, 0);
-    // setCurrentIndex((prevIndex) => prevIndex); // Adjust currentIndex if needed
   };
 
   return (
     <Stack {...props} spacing={1.5} ref={ref}>
       <AnimatePresence>
-        {dataCollections.slice(currentIndex, currentIndex + 3).map((dataCollection, index) => (
+        {dataCollections.slice(0, 3).map((dataCollection, index) => (
           <NoSSRDataCollectionItem
             key={dataCollection.id}
             dataCollection={dataCollection}

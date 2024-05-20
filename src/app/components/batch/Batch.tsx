@@ -1,16 +1,10 @@
-import React from 'react';
-import { useGameState } from '@app/contexts/GameStateContext';
-import { Box, Grid, Paper, Typography } from '@mui/material';
-import Generator from '@app/components/generator-example/Generator-example';
-import Upgrade from '@app/components/upgrade/Upgrade';
 import DataCollectionStack from "@/app/components/activity/data-collection-stack/DataCollectionStack";
-import { ResourceOverview } from '../resource-overview/ResourceOverview';
+import { Grid, Paper } from '@mui/material';
 import { ControlPanel } from '../control/control-panel/ControlPanel';
+import { ResourceOverview } from '../resource-overview/ResourceOverview';
 
 
-export function Game() {
-  const { coreState } = useGameState();
-
+export function Batch() {
   return (
     <Grid
       container
@@ -19,15 +13,12 @@ export function Game() {
       ml={8}
       mt={4}
       justifyContent="center"
-      rowSpacing={1}
-    // alignItems="center"
-    >
+      rowSpacing={1}>
       {/* Left Column */}
       <Grid item xs={12} md={6} direction="column">
         <Paper elevation={2} sx={{ marginTop: 2, padding: 2, flexGrow: 1 }}>
           {/* Place for console */}
         </Paper>
-
         <Paper elevation={0} sx={{ marginTop: 2, height: 300, padding: 2 }}>
           {/* dataCollection stack */}
           <DataCollectionStack
@@ -37,16 +28,12 @@ export function Game() {
           />
         </Paper>
       </Grid>
-
       {/* Right Column */}
       <Grid item xs={12} md={4} sx={{ display: 'flex', flexDirection: 'column' }}>
         <Paper elevation={2} sx={{ marginTop: 2, padding: 2, flexGrow: 1 }}>
           <ControlPanel />
-
-          {/* <Generator id="1" name="Basic Generator" rate={1} cost={100} /> */}
         </Paper>
       </Grid>
-
       <Grid item xs={12} md={6} />
       <Grid item xs={12} md={4}>
         <Paper elevation={2} sx={{ marginTop: 0, padding: 2 }}>
@@ -57,4 +44,4 @@ export function Game() {
   );
 };
 
-export default Game;
+export default Batch;

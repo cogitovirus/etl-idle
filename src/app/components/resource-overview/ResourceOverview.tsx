@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Typography, Box } from '@mui/material';
-import { useGameState } from '@/app/contexts/GameStateContext';
+import { CoreStateContext } from '@/app/contexts/GameStateContext';
 import { CoreState } from '@/engine/core/CoreState';
 import { animate } from 'framer-motion';
 
@@ -49,8 +49,8 @@ function AnimatedNumber({ value, roundModifier }: { value: number, roundModifier
 }
 
 export function ResourceOverview() {
-  const { coreState: gameState } = useGameState();
-  const { funds, data, processingSpeed, dataWarehouseCapacity, innovationCredits } = useResourceOverview(gameState);
+  const coreState = useContext(CoreStateContext);
+  const { funds, data, processingSpeed, dataWarehouseCapacity, innovationCredits } = useResourceOverview(coreState);
 
   return (
     <Box>
