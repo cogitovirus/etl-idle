@@ -1,7 +1,7 @@
 type StateChangeListener = () => void;
 
 // TODO: notify listeners has gaps, sometimes it might not notify listeners of the change
-export class StateChangeEventEmitter {
+export class EventEmitter {
   private listeners: StateChangeListener[] = [];
 
   subscribe(listener: StateChangeListener) {

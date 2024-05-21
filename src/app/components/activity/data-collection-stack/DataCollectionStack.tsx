@@ -13,15 +13,6 @@ const DataCollectionStack = React.forwardRef<HTMLDivElement, {}>(function DataCo
   const coreState = useContext(CoreStateContext);
   const [dataCollections, setDataCollections] = React.useState<DataCollection[]>(coreState.getDataCollections());
 
-  React.useEffect(() => {
-    // Sync dataCollections with the gameState whenever gameState changes
-    // Using setTimeout with a zero delay defers the state updates,
-    // ensuring they don't interfere with the rendering phase of another component.
-    setTimeout(() => {
-      setDataCollections(coreState.getDataCollections());
-    }, 0);
-  }, [coreState]);
-
   const handleComplete = (dc: DataCollection) => {
     coreState.dataCollectionService.completeDataCollection(dc);
     coreState.dataCollectionService.getAndPushNewCollection();

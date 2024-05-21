@@ -4,8 +4,7 @@ import { DataCollectionService } from "../services/DataCollectionService";
 import { Upgrade } from "../entities/Upgrade";
 import { TaskService } from "../services/TaskService";
 import { Cost } from "../entities/Cost";
-import { StateChangeEventEmitter } from "./StateChangeEventEmitter";
-import { NarrativeEventEmitter } from "./NarrativeEventEmitter";
+import { EventEmitter } from "./EventEmitter";
 
 
 export class CoreState {
@@ -26,8 +25,7 @@ export class CoreState {
   private commandLineVisible: boolean;
   private dataCollectionVisible: boolean;
   // Event emitters
-  stateChangeEmitter: StateChangeEventEmitter;
-  narrativeEventEmitter: NarrativeEventEmitter;
+  stateChangeEmitter: EventEmitter;
 
   constructor() {
     this.funds = 0;
@@ -36,8 +34,7 @@ export class CoreState {
     this.dataWarehouseCapacity = 10 * 1024; // 10 Gb in Mb
     this.innovationCredits = 0;
 
-    this.stateChangeEmitter = new StateChangeEventEmitter();
-    this.narrativeEventEmitter = new NarrativeEventEmitter();
+    this.stateChangeEmitter = new EventEmitter();
 
     this.allUpgrades = [];
     this.unlockedUpgrades = [];
@@ -46,15 +43,6 @@ export class CoreState {
     this.taskService = new TaskService(this);
     this.dataCollectionService = new DataCollectionService(this);
     this.dataCollections = Array.from({ length: 3 }).map(() => this.dataCollectionService.generateRandomDataCollection());
-  }
-
-  // Narrative Event Methods
-  subscribeToNarrative(listener: (message: string) => void) {
-    this.narrativeEventEmitter.subscribe(listener);
-  }
-
-  notifyNarrative(message: string) {
-    this.narrativeEventEmitter.notifyListeners(message);
   }
 
   // State Change Event Methods

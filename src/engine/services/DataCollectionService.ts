@@ -53,7 +53,7 @@ export class DataCollectionService {
 
   getRandomDataSize(): number {
     // Adjust the logic for data size based on game progression
-    return Math.floor(Math.random() * 50) + 1; // Example: data size between 1 and 50 Mb
+    return Math.floor(Math.random() * 15) + 1; // Example: data size between 1 and 15 Mb
   }
 
   // TODO: implement color palette generation

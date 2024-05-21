@@ -1,0 +1,38 @@
+[
+  {
+    "id": "event_1",
+    "trigger": "funds_reached",
+    "conditions": [
+      { "type": "funds", "value": 1000 }
+    ],
+    "message": "You have reached $1000! Keep going!",
+    "delay": 0
+  },
+  {
+    "id": "event_2",
+    "trigger": "upgrade_bought",
+    "conditions": [
+      { "type": "upgrade", "value": "high_speed_processor" }
+    ],
+    "message": "High-Speed Processor upgrade acquired!",
+    "delay": 0
+  },
+  {
+    "id": "event_3",
+    "trigger": "task_unlocked",
+    "conditions": [
+      { "type": "task", "value": "optimize_pipeline" }
+    ],
+    "message": "New task unlocked: Optimize Pipeline!",
+    "delay": 0
+  },
+  {
+    "id": "event_4",
+    "trigger": "play_time",
+    "conditions": [
+      { "type": "time", "value": 300 }
+    ],
+    "message": "You've been playing for 5 minutes! Time flies when you're processing data!",
+    "delay": 0
+  }
+]

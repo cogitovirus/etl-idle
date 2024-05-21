@@ -25,6 +25,6 @@
       "@engine/*": ["./src/engine/*"],
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "eslintrc.js"],
   "exclude": ["node_modules"]
 }
