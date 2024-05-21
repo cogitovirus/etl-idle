@@ -13,6 +13,7 @@ export class CoreState {
   private processingSpeed: number; // Processing speed in Mb/s
   private dataWarehouseCapacity: number; // Capacity in Mb
   private dataCollections: DataCollection[];
+  private startTime: number;
   // Tasks
   taskService: TaskService;
   dataCollectionService: DataCollectionService;
@@ -33,6 +34,7 @@ export class CoreState {
     this.processingSpeed = 1; // Initial processing speed
     this.dataWarehouseCapacity = 10 * 1024; // 10 Gb in Mb
     this.innovationCredits = 0;
+    this.startTime = Date.now();
 
     this.stateChangeEmitter = new EventEmitter();
 
@@ -80,6 +82,7 @@ export class CoreState {
   getDataWarehouseCapacity(): number { return this.dataWarehouseCapacity; }
   getUpgrades(): Upgrade[] { return this.allUpgrades; }
   getInnovationCredits(): number { return this.innovationCredits; }
+  getStartTime(): number { return this.startTime; }
   // Funds
   getFunds(): number { return this.funds; }
 
