@@ -1,36 +1,44 @@
-import { DataCollection,
+import dynamicIconImports from "lucide-react/dynamicIconImports";
+import { v4 as uuid4 } from "uuid";
+import { CoreState } from "../core/CoreState";
+import {
+  compressionIconMap,
   CompressionType,
-  fileTypes,
   compressionTypes,
+  DataCollection,
   encryptionIcon,
   fileTypeIconMap,
-  compressionIconMap } from "../entities/DataCollection";
-import { CoreState } from "../core/CoreState";
-import { v4 as uuid4 } from "uuid";
+  fileTypes
+} from "../entities/DataCollection";
 import { generateRandomName } from "../utils/randomNameGenerator";
-import dynamicIconImports from "lucide-react/dynamicIconImports";
 
 
 export class DataCollectionService {
   private coreState: CoreState;
+  private dataCollections: DataCollection[];
 
   constructor(coreState: CoreState, seed?: string) {
     this.coreState = coreState;
+    this.dataCollections = Array.from({ length: 3 }).map(() => this.generateRandomDataCollection());
+  }
+
+  getDataCollections(): DataCollection[] { return this.dataCollections; }
+  addDataCollection(dataCollection: DataCollection) { this.dataCollections.push(dataCollection); }
+  removeDataCollection(id: string) {
+    this.dataCollections = this.dataCollections.filter(collection => collection.id !== id);
   }
 
   public completeDataCollection(dc: DataCollection) {
     this.coreState.addDataToWarehouse(dc.dataSize);
-    this.coreState.removeDataCollection(dc.id);
-    this.coreState.notifyAboutCoreStateChange();
+    this.removeDataCollection(dc.id);
   }
 
   public getAndPushNewCollection() {
     const newDataCollection = this.generateRandomDataCollection();
-    this.coreState.addDataCollection(newDataCollection);
+    this.addDataCollection(newDataCollection);
   }
 
   generateRandomDataCollection(): DataCollection {
-
     const fileType = this.getRandomElement(fileTypes);
     const compressed = this.getRandomElement(compressionTypes);
 
@@ -65,7 +73,7 @@ export class DataCollectionService {
     return array[Math.floor(Math.random() * array.length)];
   }
 
-  getDataCollectionIcon = (encrypted: boolean, compressed: CompressionType, fileType: string ): keyof typeof dynamicIconImports => {
+  getDataCollectionIcon = (encrypted: boolean, compressed: CompressionType, fileType: string): keyof typeof dynamicIconImports => {
     if (encrypted) {
       return encryptionIcon;
     }

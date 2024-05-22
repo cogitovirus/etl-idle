@@ -2,7 +2,7 @@ import { DataCollection } from '@/engine/entities/DataCollection';
 import { Box, Card, CardContent, Typography } from '@mui/material';
 import LinearProgress, { LinearProgressProps } from '@mui/material/LinearProgress';
 import { motion } from "framer-motion";
-import * as React from 'react';
+import { useState, useEffect, memo, forwardRef, useRef } from 'react';
 import Icon from '../../../common/icon/Icon';
 
 
@@ -26,7 +26,7 @@ function LinearProgressWithLabel(props: LinearProgressProps & { value: number, l
   );
 }
 
-const DataCollectionInfo = React.memo(function DataCollectionInfo({ dataCollection }: Pick<DataCollectionProps, 'dataCollection'>) {
+const DataCollectionInfo = memo(function DataCollectionInfo({ dataCollection }: Pick<DataCollectionProps, 'dataCollection'>) {
   return (
     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '92%', p: 2 }}>
       <CardContent sx={{ flexGrow: 1, padding: 0 }}>
@@ -40,36 +40,49 @@ const DataCollectionInfo = React.memo(function DataCollectionInfo({ dataCollecti
   );
 });
 
-const DataCollectionItem = React.forwardRef<HTMLDivElement, DataCollectionProps>(function DataCollectionItem({
+const DataCollectionItem = forwardRef<HTMLDivElement, DataCollectionProps>(function DataCollectionItem({
   dataCollection,
   processingSpeed,
   isProcessing,
   onComplete
 }: DataCollectionProps, ref) {
-  const [processed, setProcessed] = React.useState(0);
+  const [processed, setProcessed] = useState(0);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const hasCompletedRef = useRef(false);
 
-  React.useEffect(() => {
-    let timer: NodeJS.Timeout;
-    // Reset processed data when a new data collection starts
+  // elaborate useEffect to assure idempotency 
+  useEffect(() => {
     setProcessed(0);
+    hasCompletedRef.current = false;
+
     if (!isProcessing) return;
 
-    timer = setInterval(() => {
+    const process = () => {
       setProcessed((prevProcessed) => {
         const nextProcessed = prevProcessed + processingSpeed;
         if (nextProcessed >= dataCollection.dataSize) {
-          clearInterval(timer);
-          onComplete();
+          clearInterval(intervalRef.current!);
+          intervalRef.current = null;
+          if (!hasCompletedRef.current) {
+            onComplete();
+            hasCompletedRef.current = true;
+          }
           return dataCollection.dataSize;
         }
         return nextProcessed;
       });
-    }, 1000);
+    };
+
+    intervalRef.current = setInterval(process, 1000);
 
     return () => {
-      if (timer) clearInterval(timer);
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
     };
-  }, [isProcessing, processingSpeed, dataCollection, onComplete]);
+  }, [isProcessing, processingSpeed, dataCollection.dataSize, onComplete]);
+
 
   const progress = (processed / dataCollection.dataSize) * 100;
   const progressLabel = `(${Math.round(progress)}% complete)`;

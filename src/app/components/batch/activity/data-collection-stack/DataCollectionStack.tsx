@@ -11,13 +11,16 @@ const NoSSRDataCollectionItem = dynamic(() => import('../data-collection-item/Da
 
 const DataCollectionStack = React.forwardRef<HTMLDivElement, {}>(function DataCollectionStack(props, ref) {
   const coreState = useContext(CoreStateContext);
-  const [dataCollections, setDataCollections] = React.useState<DataCollection[]>(coreState.getDataCollections());
+  const [dataCollections, setDataCollections] = React.useState<DataCollection[]>(coreState.dataCollectionService.getDataCollections());
 
   const handleComplete = (dc: DataCollection) => {
     coreState.dataCollectionService.completeDataCollection(dc);
     coreState.dataCollectionService.getAndPushNewCollection();
+
+    // TODO: workaround for Cannot update a component (`ForwardRef(DataCollectionStack)`)
+    // while rendering a different component (`ForwardRef(DataCollectionItem)`)
     setTimeout(() => {
-      setDataCollections([...coreState.getDataCollections()]);
+      setDataCollections(coreState.dataCollectionService.getDataCollections());
     }, 0);
   };
 
