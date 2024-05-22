@@ -21,7 +21,7 @@ export class DataCollectionService {
   public completeDataCollection(dc: DataCollection) {
     this.coreState.addDataToWarehouse(dc.dataSize);
     this.coreState.removeDataCollection(dc.id);
-    this.coreState.notifyStateChange();
+    this.coreState.notifyAboutCoreStateChange();
   }
 
   public getAndPushNewCollection() {

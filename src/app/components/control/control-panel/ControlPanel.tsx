@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Tabs, Tab, Typography, Paper } from "@mui/material";
+import { Box, Tabs, Tab, Typography } from "@mui/material";
 import { UpgradeList } from "../upgrade-list/UpgradeList";
 import { TaskList } from "../task-list/TaskList";
 import { GeneratorList } from "../generator-list/GeneratorList";

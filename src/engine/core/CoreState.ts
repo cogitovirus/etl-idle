@@ -26,7 +26,7 @@ export class CoreState {
   private commandLineVisible: boolean;
   private dataCollectionVisible: boolean;
   // Event emitters
-  stateChangeEmitter: EventEmitter;
+  EventEmitter: EventEmitter;
 
   constructor() {
     this.funds = 0;
@@ -36,7 +36,7 @@ export class CoreState {
     this.innovationCredits = 0;
     this.startTime = Date.now();
 
-    this.stateChangeEmitter = new EventEmitter();
+    this.EventEmitter = new EventEmitter();
 
     this.allUpgrades = [];
     this.unlockedUpgrades = [];
@@ -47,17 +47,17 @@ export class CoreState {
     this.dataCollections = Array.from({ length: 3 }).map(() => this.dataCollectionService.generateRandomDataCollection());
   }
 
-  // State Change Event Methods
-  subscribeToStateChanges(listener: () => void) {
-    this.stateChangeEmitter.subscribe(listener);
+  // Core State Change Event Emitter
+  subscribeToCoreStateChanges(listener: () => void) {
+    this.EventEmitter.subscribe(listener);
   }
 
-  unsubscribeFromStateChanges(listener: () => void) {
-    this.stateChangeEmitter.unsubscribe(listener);
+  unsubscribeFromCoreStateChanges(listener: () => void) {
+    this.EventEmitter.unsubscribe(listener);
   }
 
-  notifyStateChange() {
-    this.stateChangeEmitter.notifyListeners();
+  notifyAboutCoreStateChange() {
+    this.EventEmitter.notifyListeners();
   }
 
   // Data Collections
@@ -73,7 +73,7 @@ export class CoreState {
     } else {
       this.data = this.dataWarehouseCapacity; // Cap at warehouse capacity
     }
-    this.notifyStateChange();
+    this.notifyAboutCoreStateChange();
   }
 
   // Getters
@@ -88,7 +88,7 @@ export class CoreState {
 
   addFunds(amount: number) {
     this.funds += amount;
-    this.notifyStateChange();
+    this.notifyAboutCoreStateChange();
   }
 
   deductFunds(costs?: Cost[]) {
@@ -102,7 +102,7 @@ export class CoreState {
         this.innovationCredits -= cost.amount; // Assuming you have an innovationCredits property
       }
     });
-    this.notifyStateChange();
+    this.notifyAboutCoreStateChange();
   }
 
   // Check if the player can afford a cost
@@ -135,12 +135,12 @@ export class CoreState {
   // Method to increase processing speed
   increaseProcessingSpeed(amount: number) {
     this.processingSpeed += amount;
-    this.notifyStateChange();
+    this.notifyAboutCoreStateChange();
   }
 
   increaseWarehouseCapacity(amount: number) {
     this.dataWarehouseCapacity += amount;
-    this.notifyStateChange();
+    this.notifyAboutCoreStateChange();
   }
 
   // TODO: I don't even remember why I need this - inspect
@@ -149,4 +149,5 @@ export class CoreState {
     this.taskService.processTasks(deltaTimeInSeconds);
     this.taskService.checkForUnlockedTasks();
   }
+
 }

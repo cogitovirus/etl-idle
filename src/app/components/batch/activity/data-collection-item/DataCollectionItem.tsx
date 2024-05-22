@@ -3,7 +3,7 @@ import { Box, Card, CardContent, Typography } from '@mui/material';
 import LinearProgress, { LinearProgressProps } from '@mui/material/LinearProgress';
 import { motion } from "framer-motion";
 import * as React from 'react';
-import Icon from '../../common/icon/Icon';
+import Icon from '../../../common/icon/Icon';
 
 
 interface DataCollectionProps {
@@ -26,7 +26,19 @@ function LinearProgressWithLabel(props: LinearProgressProps & { value: number, l
   );
 }
 
-const MemoizedIcon = React.memo(Icon);
+const DataCollectionInfo = React.memo(function DataCollectionInfo({ dataCollection }: Pick<DataCollectionProps, 'dataCollection'>) {
+  return (
+    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '92%', p: 2 }}>
+      <CardContent sx={{ flexGrow: 1, padding: 0 }}>
+        <Typography variant="h6" component="div">{dataCollection.name}</Typography>
+        <Typography variant="body2" component="p">{dataCollection.dataSize} Mb</Typography>
+      </CardContent>
+      <Box sx={{ display: 'flex', alignItems: 'normal' }}>
+        <Icon name={dataCollection.icon} />
+      </Box>
+    </Box>
+  );
+});
 
 const DataCollectionItem = React.forwardRef<HTMLDivElement, DataCollectionProps>(function DataCollectionItem({
   dataCollection,
@@ -63,17 +75,9 @@ const DataCollectionItem = React.forwardRef<HTMLDivElement, DataCollectionProps>
   const progressLabel = `(${Math.round(progress)}% complete)`;
 
   return (
-    // TODO: rework the fucking styles
+    // TODO: rework the fucking styling
     <Card ref={ref} sx={{ width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '92%', p: 2 }}>
-        <CardContent sx={{ flexGrow: 1, padding: 0 }}>
-          <Typography variant="h6" component="div">{dataCollection.name}</Typography>
-          <Typography variant="body2" component="p">{dataCollection.dataSize} Mb</Typography>
-        </CardContent>
-        <Box sx={{ display: 'flex', alignItems: 'normal' }}>
-          <MemoizedIcon name={dataCollection.icon} />
-        </Box>
-      </Box>
+      <DataCollectionInfo dataCollection={dataCollection} />
       <Box sx={{ width: '100%', px: 2, pb: 2 }}>
         <LinearProgressWithLabel value={progress} label={progressLabel} />
       </Box>

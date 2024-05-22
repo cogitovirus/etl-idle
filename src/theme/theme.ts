@@ -100,11 +100,11 @@ const theme = createTheme({
           color: grey[800], // Primary contained button text color
           boxShadow: 'none', // Disable shadow
           '&:hover': {
-            backgroundColor: '#f5f5f5', // Primary contained button background color on hover
+            backgroundColor: blue[100], // Primary contained button background color on hover
             boxShadow: 'none', // Disable shadow
           },
           '&:active': {
-            backgroundColor: '#f5f5f5', // Primary contained button background color on active
+            backgroundColor: blue[100], // Primary contained button background color on active
             boxShadow: 'none', // Disable shadow
           },
         },
@@ -112,13 +112,13 @@ const theme = createTheme({
           borderColor: grey[700], // Primary outlined button border color
           color: grey[800], // Primary outlined button text color
           '&:hover': {
-            borderColor: red[600], // Primary outlined button border color on hover
-            color: red[600], // Primary outlined button text color on hover
+            borderColor: blue[600], // Primary outlined button border color on hover
+            color: blue[600], // Primary outlined button text color on hover
             backgroundColor: 'rgb(245, 245, 245)', // Light grey background color on hover
           },
           '&:active': {
-            borderColor: red[700], // Primary outlined button border color on active
-            color: red[700], // Primary outlined button text color on active
+            borderColor: blue[700], // Primary outlined button border color on active
+            color: blue[700], // Primary outlined button text color on active
             backgroundColor: 'rgb(245, 245, 245)', // Light grey background color on active
           },
         },

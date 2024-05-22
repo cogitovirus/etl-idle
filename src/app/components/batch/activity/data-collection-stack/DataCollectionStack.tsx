@@ -3,7 +3,7 @@ import Stack from '@mui/material/Stack';
 import { AnimatePresence, motion } from "framer-motion";
 import dynamic from 'next/dynamic';
 import * as React from 'react';
-import { CoreStateContext } from '../../../contexts/GameStateContext';
+import { CoreStateContext } from '../../../../contexts/GameStateContext';
 import { useContext } from 'react';
 
 

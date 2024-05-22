@@ -1,5 +1,6 @@
-import DataCollectionStack from "@/app/components/activity/data-collection-stack/DataCollectionStack";
+import DataCollectionStack from "./activity/data-collection-stack/DataCollectionStack";
 import { Grid, Paper } from '@mui/material';
+// TODO: Control panel and resource overview should live outside of batch
 import { ControlPanel } from '../control/control-panel/ControlPanel';
 import { ResourceOverview } from '../resource-overview/ResourceOverview';
 

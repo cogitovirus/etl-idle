@@ -2,18 +2,25 @@ import { v4 as uuid4 } from "uuid";
 import { Task } from "../entities/Task";
 import tasksJson from "../data/tasks.json";
 import { CoreState } from "../core/CoreState";
+import { EventEmitter } from "../core/EventEmitter";
 
 
 export class TaskService {
   private coreState: CoreState;
   private allTasks: Task[];
   private unlockedTasks: Task[];
+  private eventEmitter: EventEmitter;
+  private taskCheckInterval: any;
+  private taskProcessInterval: any;
 
   constructor(coreState: CoreState) {
     this.coreState = coreState;
     this.allTasks = this.loadTasks();
     this.unlockedTasks = this.allTasks.filter(task => !task.prerequisites?.length);
-    this.coreState.notifyStateChange();
+    this.eventEmitter = new EventEmitter();
+
+    this.startTaskProcessing();
+    this.startTaskChecking();
   }
 
   loadTasks(): Task[] {
@@ -29,6 +36,24 @@ export class TaskService {
     });
   }
 
+  /**
+   * Starts the interval for processing tasks.
+   */
+  private startTaskProcessing() {
+    this.taskProcessInterval = setInterval(() => {
+      this.processTasks(1); // process tasks every second
+    }, 1000);
+  }
+
+  /**
+   * Starts the interval for checking unlockable tasks.
+   */
+  private startTaskChecking() {
+    this.taskCheckInterval = setInterval(() => {
+      this.checkForUnlockedTasks();
+    }, 5000); // check for unlockable tasks every 5 seconds
+  }
+
   checkForUnlockedTasks() {
     const newlyUnlockedTasks = this.allTasks.filter(task => {
       if (!task.prerequisites) return false; // No prerequisites means the task is unlocked by default
@@ -41,8 +66,11 @@ export class TaskService {
       });
     });
 
-    this.unlockedTasks = [...this.unlockedTasks, ...newlyUnlockedTasks];
-    this.coreState.notifyStateChange();
+    if (newlyUnlockedTasks.length > 0) {
+      this.unlockedTasks = [...this.unlockedTasks, ...newlyUnlockedTasks];
+      this.notifyAboutTasksChange();
+      this.coreState.notifyAboutCoreStateChange();
+    }
   }
 
   getUnlockedTasks(): Task[] {
@@ -56,7 +84,7 @@ export class TaskService {
       task.isActive = true;
       task.status = 'In Progress';
       this.coreState.deductFunds(task.costs);
-      this.coreState.notifyStateChange();
+      this.notifyAboutTasksChange();
     }
   }
 
@@ -85,7 +113,7 @@ export class TaskService {
         }
       }
     });
-    this.coreState.notifyStateChange();
+    this.notifyAboutTasksChange();
   }
 
   completeTask(taskId: string) {
@@ -110,7 +138,7 @@ export class TaskService {
 
       task.xp += task.xp; // Increase XP for the task
       this.levelUpTask(task);
-      this.coreState.notifyStateChange();
+      this.notifyAboutTasksChange();
     }
   }
 
@@ -122,5 +150,21 @@ export class TaskService {
       task.xp = 0; // Reset XP after leveling up
       // Optionally enhance task's results or modifiers upon leveling up
     }
+  }
+
+  /**
+   * Event emitter
+   */
+
+  private notifyAboutTasksChange() {
+    this.eventEmitter.notifyListeners();
+  }
+
+  subscribeToTasksChanges(listener: () => void) {
+    this.eventEmitter.subscribe(listener);
+  }
+
+  unsubscribeFromTasksChanges(listener: () => void) {
+    this.eventEmitter.unsubscribe(listener);
   }
 }

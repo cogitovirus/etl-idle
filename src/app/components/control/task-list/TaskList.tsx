@@ -35,21 +35,23 @@ const renderModifiers = (modifiers: Modifier[]) => {
 export function TaskList() {
   const coreState = useContext(CoreStateContext);
   const [unlockedTasks, setUnlockedTasks] = useState<Task[]>(coreState.taskService.getUnlockedTasks());
+  const [forceRender, setForceRender] = useState(false);
 
   useEffect(() => {
-    const handleStateChange = () => {
+    const handleTasksChange = () => {
       setUnlockedTasks(coreState.taskService.getUnlockedTasks());
     };
 
-    coreState.subscribeToStateChanges(handleStateChange);
+    coreState.taskService.subscribeToTasksChanges(handleTasksChange);
 
     return () => {
-      coreState.unsubscribeFromStateChanges(handleStateChange);
+      coreState.taskService.unsubscribeFromTasksChanges(handleTasksChange);
     };
   }, [coreState]);
 
   const handleStartTask = (taskId: string) => {
     coreState.taskService.startTask(taskId);
+    setForceRender(prev => !prev); // Toggle state to force re-render
   };
 
   return (
