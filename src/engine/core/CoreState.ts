@@ -16,7 +16,7 @@ export class CoreState {
   taskService: TaskService;
   dataCollectionService: DataCollectionService;
   // Event emitters
-  EventEmitter: EventEmitter;
+  eventEmitter: EventEmitter;
   // Visibility modifiers
   private commandLineVisible: boolean;
   private dataCollectionVisible: boolean;
@@ -32,7 +32,7 @@ export class CoreState {
     this.taskService = new TaskService(this);
     this.dataCollectionService = new DataCollectionService(this);
     // Event emitters
-    this.EventEmitter = new EventEmitter();
+    this.eventEmitter = new EventEmitter();
     // Visibility modifiers
     this.commandLineVisible = true;
     this.dataCollectionVisible = true;
@@ -133,15 +133,15 @@ export class CoreState {
    */
 
   subscribeToCoreStateChanges(listener: () => void) {
-    this.EventEmitter.subscribe(listener);
+    this.eventEmitter.subscribe(listener);
   }
 
   unsubscribeFromCoreStateChanges(listener: () => void) {
-    this.EventEmitter.unsubscribe(listener);
+    this.eventEmitter.unsubscribe(listener);
   }
 
   notifyAboutCoreStateChange() {
-    this.EventEmitter.notifyListeners();
+    this.eventEmitter.notifyListeners();
   }
 
   // other methods...

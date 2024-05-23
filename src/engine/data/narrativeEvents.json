@@ -21,7 +21,7 @@
     "id": "event_3",
     "trigger": "task_unlocked",
     "conditions": [
-      { "type": "task", "value": "optimize_pipeline" },
+      { "type": "task", "value": "Data Brokerage" },
       { "type": "time", "value": 300 }
     ],
     "message": "New task unlocked: Optimize Pipeline!",
