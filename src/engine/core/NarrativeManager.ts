@@ -1,5 +1,5 @@
-import narrativeEventsJson from "../data/narrativeEvents.json";
-import { NarrativeEvent, Condition, TriggerType, TriggerValue, StateValues } from "../entities/NarrativeEvent";
+import narrativeEvents from "../data/narrativeEvents";
+import NarrativeEvent, { Condition, TriggerType, TriggerValue } from "../entities/NarrativeEvent";
 import { CoreState } from "./CoreState";
 import { EventEmitter } from "./EventEmitter";
 
@@ -25,7 +25,6 @@ export class NarrativeManager {
 
   private loadEventsByTrigger(): Map<string, NarrativeEvent[]> {
     const eventsByTrigger = new Map<string, NarrativeEvent[]>();
-    const narrativeEvents = narrativeEventsJson as NarrativeEvent[];
 
     narrativeEvents.forEach(event => {
       // Check if the trigger type is already a key in the map
@@ -40,43 +39,62 @@ export class NarrativeManager {
     return eventsByTrigger;
   }
 
-  /**
-    * Checks and triggers narrative events based on the specified trigger type and state values.
-    * @param {TriggerType} triggerType - The type of trigger to check (e.g., 'funds_reached', 'data_processed').
-    * @param {StateValues} stateValues - The current state values to compare against event conditions.
-    */
-  private triggerNarrativeEvents(triggerType: TriggerType, stateValues: StateValues) {
+
+  private checkAndPushUnlockedEventsToQueue(triggerType: TriggerType) {
     const events = this.eventsByTrigger.get(triggerType) || [];
     events.forEach(event => {
-      if (this.checkConditions(event.conditions, stateValues)) {
-        this.addMessage(event);
+      if (this.checkCondition(triggerType, event.condition)) {
+        this.pushMessage(event);
         // Remove event from eventsByTrigger to prevent it from triggering again
         this.eventsByTrigger.set(triggerType, events.filter(e => e.id !== event.id));
       }
     });
   }
 
+
   /**
-     * Checks if the conditions for an event are met.
-     * @param {Condition[]} conditions - The conditions to check.
-     * @param {StateValues} stateValues - The current state values to compare against.
-     * @returns {boolean} - True if all conditions are met, false otherwise.
-     */
-  private checkConditions(conditions: Condition[], stateValues: StateValues): boolean {
-    return conditions.every(condition => {
-      const value = stateValues[condition.type];
-      return value !== undefined && value === condition.value;
-    });
+   * Checks if the condition for an event is met based on the trigger type.
+   * @param {TriggerType} triggerType - The type of trigger to check.
+   * @param {Condition} condition - The condition to check.
+   * @returns {boolean} - True if the condition is met, false otherwise.
+   */
+  private checkCondition(triggerType: TriggerType, condition: Condition): boolean {
+    switch (triggerType) {
+      case 'funds_reached':
+        return this.isNumber(condition.value) && this.coreState.getFunds() >= condition.value;
+      case 'play_time':
+        return this.isNumber(condition.value) && this.coreState.getPlayTime() >= condition.value;
+      case 'innovation_points_reached':
+        return this.isNumber(condition.value) && this.coreState.getInnovationCredits() >= condition.value;
+      case 'data_wh_capacity_reached':
+        return this.isNumber(condition.value) && this.coreState.getDataWarehouseCapacity() >= condition.value;
+      case 'feature_unlocked':
+        return this.isString(condition.value) && this.coreState.isFeatureUnlocked(condition.value);
+      case 'custom_hook':
+        // TODO: Placeholder for custom hook logic
+        return false; // Replace with actual custom hook logic
+      default:
+        return false;
+    }
+  }
+
+  private isNumber(value: TriggerValue): value is number {
+    return typeof value === 'number';
+  }
+  
+  private isString(value: TriggerValue): value is string {
+    return typeof value === 'string';
   }
 
     /**
    * Adds a message to the narrative queue and emits an event.
    * @param {NarrativeEvent} event - The narrative event to add.
    */
-    private addMessage(event: NarrativeEvent) {
+    private pushMessage(event: NarrativeEvent) {
+      // TODO: wait here on in the component ?
       const delay = event.delay !== undefined ? event.delay : this.defaultDelay;
       this.narrativeQueue.push(event);
-      this.notifyAboutNewNarrative
+      this.notifyAboutNewNarrative();
     }
 
   /**
@@ -94,7 +112,4 @@ export class NarrativeManager {
   notifyAboutNewNarrative() {
     this.eventEmitter.notifyListeners();
   }
-
-
-
 }

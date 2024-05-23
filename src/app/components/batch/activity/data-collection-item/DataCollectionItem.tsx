@@ -3,7 +3,7 @@ import { Box, Card, CardContent, Typography } from '@mui/material';
 import LinearProgress, { LinearProgressProps } from '@mui/material/LinearProgress';
 import { motion } from "framer-motion";
 import { useState, useEffect, memo, forwardRef, useRef } from 'react';
-import Icon from '../../../common/icon/Icon';
+import LucideCommonIcon from '../../../common/lucide-common-icon/Icon';
 
 
 interface DataCollectionProps {
@@ -34,7 +34,7 @@ const DataCollectionInfo = memo(function DataCollectionInfo({ dataCollection }: 
         <Typography variant="body2" component="p">{dataCollection.dataSize} Mb</Typography>
       </CardContent>
       <Box sx={{ display: 'flex', alignItems: 'normal' }}>
-        <Icon name={dataCollection.icon} />
+        <LucideCommonIcon name={dataCollection.icon} />
       </Box>
     </Box>
   );

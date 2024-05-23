@@ -11,7 +11,8 @@ export class CoreState {
   private processingSpeed: number; // Processing speed in Mb/s
   private dataWarehouseCapacity: number; // Capacity in Mb
   private innovationCredits: number;
-  private startTime: number;
+  private playTime: number;
+  private allUnlockedFeatures: string[];
   // Services
   taskService: TaskService;
   dataCollectionService: DataCollectionService;
@@ -27,7 +28,8 @@ export class CoreState {
     this.processingSpeed = 1; // Initial processing speed
     this.dataWarehouseCapacity = 10 * 1024; // 10 Gb in Mb
     this.innovationCredits = 0;
-    this.startTime = Date.now();
+    this.allUnlockedFeatures = [];
+    this.playTime = Date.now();
     // Services
     this.taskService = new TaskService(this);
     this.dataCollectionService = new DataCollectionService(this);
@@ -145,5 +147,6 @@ export class CoreState {
   }
 
   // other methods...
-  getStartTime(): number { return this.startTime; }
+  getPlayTime(): number { return this.playTime; }
+  isFeatureUnlocked(feature: string): boolean { return this.allUnlockedFeatures.includes(feature); }
 }

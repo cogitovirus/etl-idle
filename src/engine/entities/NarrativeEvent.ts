@@ -1,17 +1,22 @@
-export interface NarrativeEvent {
+export default interface NarrativeEvent {
   id: string;
   trigger: TriggerType;
-  conditions: Condition[];
+  condition: Condition;
   message: string;
   delay?: number;
 }
 
-export type TriggerType = 'funds_reached' | 'upgrade_bought' | 'task_unlocked' | 'play_time' | 'data_processed';
-export type TriggerValue = number | string;
-export type StateValues = { [key: string]: TriggerValue };
-
+export type TriggerType =
+  | 'funds_reached'
+  | 'play_time'
+  | 'innovation_points_reached'
+  | 'data_wh_capacity_reached'
+  | 'feature_unlocked'
+  | 'custom_hook';
 
 export interface Condition {
   type: string;
-  value: string;
+  value: TriggerValue;
 }
+
+export type TriggerValue = number | string;

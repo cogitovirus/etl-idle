@@ -1,63 +1,83 @@
-import { NarrativeManager } from './NarrativeManager'
-import { CoreState } from './CoreState';
-import { EventEmitter } from './EventEmitter';
-import { Condition, NarrativeEvent, StateValues } from '../entities/NarrativeEvent';
+import { NarrativeManager } from "./NarrativeManager";
+import { CoreState } from "./CoreState";
+import { EventEmitter } from "./EventEmitter";
+import NarrativeEvent from "../entities/NarrativeEvent";
+import narrativeEvents from "../data/narrativeEvents";
 
-describe('NarrativeManager', () => {
-  let narrativeManager: NarrativeManager;
+jest.mock("../data/narrativeEvents", () => [
+  {
+    id: "1",
+    trigger: "funds_reached",
+    condition: { type: "funds", value: 1000 },
+    message: "You have reached $1000! Keep going!",
+    delay: 0,
+  },
+  {
+    id: "2",
+    trigger: "play_time",
+    condition: { type: "time", value: 300 },
+    message: "You've been playing for 5 minutes! Time flies when you're processing data!",
+    delay: 0,
+  },
+]);
+
+describe("NarrativeManager", () => {
   let coreState: CoreState;
-  let eventEmitter: EventEmitter;
+  let narrativeManager: NarrativeManager;
 
   beforeEach(() => {
-    coreState = new CoreState(); // Mock or create a real CoreState as needed
-    eventEmitter = new EventEmitter(); // Mock or create a real EventEmitter as needed
+    coreState = {
+      getFunds: jest.fn(),
+      getPlayTime: jest.fn(),
+      getInnovationCredits: jest.fn(),
+      getDataWarehouseCapacity: jest.fn(),
+      isFeatureUnlocked: jest.fn(),
+    } as unknown as CoreState;
+
     narrativeManager = new NarrativeManager(coreState);
   });
 
-  describe('checkConditions', () => {
-    it('should return true when all conditions are met', () => {
-      const conditions: Condition[] = [
-        { type: 'task', value: 'Data Brokerage' },
-        { type: 'time', value: 300 }
-      ];
+  test("should load narrative events by trigger", () => {
+    expect(narrativeManager["eventsByTrigger"].get("funds_reached")!.length).toBe(1);
+    expect(narrativeManager["eventsByTrigger"].get("play_time")!.length).toBe(1);
+  });
 
-      const stateValues: StateValues = {
-        task: 'Data Brokerage',
-        time: 300
-      };
+  test("should check conditions and push messages for 'funds_reached'", () => {
+    (coreState.getFunds as jest.Mock).mockReturnValue(1000);
 
-      const result = (narrativeManager as any).checkConditions(conditions, stateValues);
-      expect(result).toBe(true);
-    });
+    narrativeManager["checkAndPushUnlockedEventsToQueue"]("funds_reached");
 
-    it('should return false when any condition is not met', () => {
-      const conditions: Condition[] = [
-        { type: 'task', value: 'Data Brokerage' },
-        { type: 'time', value: 300 }
-      ];
+    expect(narrativeManager["narrativeQueue"].length).toBe(1);
+    expect(narrativeManager["narrativeQueue"][0].message).toBe("You have reached $1000! Keep going!");
+  });
 
-      const stateValues: StateValues = {
-        task: 'Data Brokerage',
-        time: 100 // This does not match the condition
-      };
+  test("should check conditions and push messages for 'play_time'", () => {
+    (coreState.getPlayTime as jest.Mock).mockReturnValue(300);
 
-      const result = (narrativeManager as any).checkConditions(conditions, stateValues);
-      expect(result).toBe(false);
-    });
+    narrativeManager["checkAndPushUnlockedEventsToQueue"]("play_time");
 
-    it('should return false when a condition is missing in stateValues', () => {
-      const conditions: Condition[] = [
-        { type: 'task', value: 'Data Brokerage' },
-        { type: 'time', value: 300 }
-      ];
+    expect(narrativeManager["narrativeQueue"].length).toBe(1);
+    expect(narrativeManager["narrativeQueue"][0].message).toBe(
+      "You've been playing for 5 minutes! Time flies when you're processing data!"
+    );
+  });
 
-      const stateValues: StateValues = {
-        task: 'Data Brokerage'
-        // 'time' is missing
-      };
+  test("should notify about new narratives", () => {
+    const listener = jest.fn();
+    narrativeManager.subscribeToNarrativeEvents(listener);
 
-      const result = (narrativeManager as any).checkConditions(conditions, stateValues);
-      expect(result).toBe(false);
-    });
+    narrativeManager["notifyAboutNewNarrative"]();
+
+    expect(listener).toHaveBeenCalled();
+  });
+
+  test("should add and remove event listeners", () => {
+    const listener = jest.fn();
+    narrativeManager.subscribeToNarrativeEvents(listener);
+    narrativeManager.unsubscribeFromNarrativeEvents(listener);
+
+    narrativeManager["notifyAboutNewNarrative"]();
+
+    expect(listener).not.toHaveBeenCalled();
   });
 });
