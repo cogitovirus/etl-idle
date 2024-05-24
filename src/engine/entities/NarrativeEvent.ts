@@ -12,6 +12,7 @@ export type TriggerType =
   | 'innovation_points_reached'
   | 'data_wh_capacity_reached'
   | 'feature_unlocked'
+  | 'processing_speed_changed'
   | 'custom_hook';
 
 export interface Condition {

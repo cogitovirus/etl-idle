@@ -1,5 +1,4 @@
 import { DataCollectionService } from "../services/DataCollectionService";
-import { Upgrade } from "../entities/Upgrade";
 import { TaskService } from "../services/TaskService";
 import { Cost } from "../entities/Cost";
 import { EventEmitter } from "./EventEmitter";
@@ -17,7 +16,15 @@ export class CoreState {
   taskService: TaskService;
   dataCollectionService: DataCollectionService;
   // Event emitters
+  // TODO: should be private ? and renamed to coreStateEmitter
   eventEmitter: EventEmitter;
+  private fundsEmitter: EventEmitter;
+  private dataEmitter: EventEmitter;
+  private processingSpeedEmitter: EventEmitter;
+  private dataWarehouseCapacityEmitter: EventEmitter;
+  private innovationCreditsEmitter: EventEmitter;
+  private playTimeEmitter: EventEmitter;
+  private featuresEmitter: EventEmitter;
   // Visibility modifiers
   private commandLineVisible: boolean;
   private dataCollectionVisible: boolean;
@@ -35,6 +42,13 @@ export class CoreState {
     this.dataCollectionService = new DataCollectionService(this);
     // Event emitters
     this.eventEmitter = new EventEmitter();
+    this.fundsEmitter = new EventEmitter();
+    this.dataEmitter = new EventEmitter();
+    this.processingSpeedEmitter = new EventEmitter();
+    this.dataWarehouseCapacityEmitter = new EventEmitter();
+    this.innovationCreditsEmitter = new EventEmitter();
+    this.playTimeEmitter = new EventEmitter();
+    this.featuresEmitter = new EventEmitter();
     // Visibility modifiers
     this.commandLineVisible = true;
     this.dataCollectionVisible = true;
@@ -48,6 +62,7 @@ export class CoreState {
 
   addFunds(amount: number) {
     this.funds += amount;
+    this.notifyAboutFundsChange();
     this.notifyAboutCoreStateChange();
   }
 
@@ -56,10 +71,12 @@ export class CoreState {
     costs.forEach(cost => {
       if (cost.type === 'funds') {
         this.funds -= cost.amount;
+        this.notifyAboutFundsChange();
       } else if (cost.type === 'data') {
         this.data -= cost.amount;
       } else if (cost.type === 'innovationCredits') {
-        this.innovationCredits -= cost.amount; // Assuming you have an innovationCredits property
+        this.innovationCredits -= cost.amount;
+        this.notifyAboutInnovationCreditsChange();
       }
     });
     this.notifyAboutCoreStateChange();
@@ -98,6 +115,7 @@ export class CoreState {
     if (this.data >= amount) {
       this.data -= amount;
       this.addFunds(amount); // TODO: Modify exchange rate. right now: 1 Mb = $1
+      this.notifyAboutCoreStateChange();
     }
   }
 
@@ -108,12 +126,14 @@ export class CoreState {
 
   increaseProcessingSpeed(amount: number) {
     this.processingSpeed += amount;
+    this.notifyAboutProcessingSpeedChange();
     this.notifyAboutCoreStateChange();
   }
 
 
   increaseWarehouseCapacity(amount: number) {
     this.dataWarehouseCapacity += amount;
+    this.notifyAboutDataWarehouseCapacityChange();
     this.notifyAboutCoreStateChange();
   }
 
@@ -132,6 +152,7 @@ export class CoreState {
 
   /**
    * Core State Change Event Emitter
+   * TODO: this is making a lot of clutter. consider moving to a separate file
    */
 
   subscribeToCoreStateChanges(listener: () => void) {
@@ -146,7 +167,57 @@ export class CoreState {
     this.eventEmitter.notifyListeners();
   }
 
+  // Subscribe methods for granular event emitters
+  subscribeToFundsChanges(listener: () => void) {
+    this.fundsEmitter.subscribe(listener);
+  }
+
+  subscribeToProcessingSpeedChanges(listener: () => void) {
+    this.processingSpeedEmitter.subscribe(listener);
+  }
+
+  subscribeToDataWarehouseCapacityChanges(listener: () => void) {
+    this.dataWarehouseCapacityEmitter.subscribe(listener);
+  }
+
+  subscribeToInnovationCreditsChanges(listener: () => void) {
+    this.innovationCreditsEmitter.subscribe(listener);
+  }
+
+  subscribeToPlayTimeChanges(listener: () => void) {
+    this.playTimeEmitter.subscribe(listener);
+  }
+
+  subscribeToFeaturesChanges(listener: () => void) {
+    this.featuresEmitter.subscribe(listener);
+  }
+
+  // Notify methods for granular event emitters
+  private notifyAboutFundsChange() {
+    this.fundsEmitter.notifyListeners();
+  }
+
+  private notifyAboutProcessingSpeedChange() {
+    this.processingSpeedEmitter.notifyListeners();
+  }
+
+  private notifyAboutDataWarehouseCapacityChange() {
+    this.dataWarehouseCapacityEmitter.notifyListeners();
+  }
+
+  private notifyAboutInnovationCreditsChange() {
+    this.innovationCreditsEmitter.notifyListeners();
+  }
+
+  private notifyAboutFeaturesChange() {
+    this.featuresEmitter.notifyListeners();
+  }
+
   // other methods...
   getPlayTime(): number { return this.playTime; }
   isFeatureUnlocked(feature: string): boolean { return this.allUnlockedFeatures.includes(feature); }
+  publishUnlockedFeature(feature: string) {
+    this.allUnlockedFeatures.push(feature);
+    this.notifyAboutFeaturesChange();
+  }
 }

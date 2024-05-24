@@ -11,16 +11,16 @@ export class NarrativeManager {
   private eventEmitter: EventEmitter;
   private eventsByTrigger: Map<string, NarrativeEvent[]>;
   private defaultDelay: number = 2; // Default delay in seconds
+  private eventQueue: TriggerType[]
+  private maxBatchSize: number = 10;
 
   constructor(coreState: CoreState) {
     this.coreState = coreState;
     this.eventEmitter = new EventEmitter();
     this.eventsByTrigger = this.loadEventsByTrigger();
+    this.eventQueue = [];
     this.narrativeQueue = [];
-
-    // Periodic checks for frequent updates
-    // TODO: not sure if this is the way to do it
-    // setInterval(this.periodicCheck.bind(this), 5000);
+    this.subscribeToCoreStateChanges();
   }
 
   private loadEventsByTrigger(): Map<string, NarrativeEvent[]> {
@@ -39,8 +39,35 @@ export class NarrativeManager {
     return eventsByTrigger;
   }
 
+  // TODO: types instead of strings ?
+  private subscribeToCoreStateChanges() {
+    this.coreState.subscribeToFundsChanges(() => this.handleCoreStateEvent('funds_reached'));
+    this.coreState.subscribeToProcessingSpeedChanges(() => this.handleCoreStateEvent('processing_speed_changed'));
+    this.coreState.subscribeToDataWarehouseCapacityChanges(() => this.handleCoreStateEvent('data_wh_capacity_reached'));
+    this.coreState.subscribeToInnovationCreditsChanges(() => this.handleCoreStateEvent('innovation_points_reached'));
+    this.coreState.subscribeToPlayTimeChanges(() => this.handleCoreStateEvent('play_time'));
+    this.coreState.subscribeToFeaturesChanges(() => this.handleCoreStateEvent('feature_unlocked'));
+  }
 
-  private checkAndPushUnlockedEventsToQueue(triggerType: TriggerType) {
+  private handleCoreStateEvent(triggerType: TriggerType) {
+    this.eventQueue.push(triggerType);
+    if (this.eventQueue.length >= this.maxBatchSize) {
+      this.processEventQueue();
+    }
+  }
+
+  private processEventQueue() {
+    const uniqueTriggerTypes = Array.from(new Set(this.eventQueue));
+    // Always include play_time in the unique trigger types
+    uniqueTriggerTypes.push('play_time');
+    uniqueTriggerTypes.forEach(triggerType => {
+      this.checkAndPushUnlockedEventsToQueueByTriggerType(triggerType);
+    });
+    this.eventQueue = [];
+  }
+
+
+  private checkAndPushUnlockedEventsToQueueByTriggerType(triggerType: TriggerType) {
     const events = this.eventsByTrigger.get(triggerType) || [];
     events.forEach(event => {
       if (this.checkCondition(triggerType, event.condition)) {

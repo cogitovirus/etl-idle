@@ -1,6 +1,6 @@
 import { v4 as uuid4 } from "uuid";
 import { Task } from "../entities/Task";
-import tasksJson from "../data/tasks.json";
+import { tasks } from "../data/tasks";
 import { CoreState } from "../core/CoreState";
 import { EventEmitter } from "../core/EventEmitter";
 
@@ -24,7 +24,7 @@ export class TaskService {
   }
 
   loadTasks(): Task[] {
-    return tasksJson.map((task: any) => {
+    return tasks.map((task: any) => {
       return {
         ...task,
         id: uuid4(),
@@ -63,13 +63,16 @@ export class TaskService {
         // Check if all prerequisites are met
         // TODO: implement logic to check if the player has completed the prerequisite tasks
         // return this.upgrades.some(upgrade => upgrade.id === prerequisite);
+        return true; // Placeholder for actual prerequisite check logic
       });
     });
 
     if (newlyUnlockedTasks.length > 0) {
       this.unlockedTasks = [...this.unlockedTasks, ...newlyUnlockedTasks];
+      newlyUnlockedTasks.forEach(task => {
+        this.coreState.publishUnlockedFeature(task.name);
+      });
       this.notifyAboutTasksChange();
-      this.coreState.notifyAboutCoreStateChange();
     }
   }
 

@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import NarrativeEvent from '../entities/NarrativeEvent';
 
-const narrativeEvents = [
+const narrativeEvents: NarrativeEvent[] = [
   {
     id: uuidv4(),
     trigger: 'funds_reached',
@@ -30,6 +30,6 @@ const narrativeEvents = [
     message: "You've been playing for 5 minutes! Time flies when you're processing data!",
     delay: 0
   }
-] as NarrativeEvent[];
+];
 
 export default narrativeEvents;

@@ -1,8 +1,5 @@
 import { NarrativeManager } from "./NarrativeManager";
 import { CoreState } from "./CoreState";
-import { EventEmitter } from "./EventEmitter";
-import NarrativeEvent from "../entities/NarrativeEvent";
-import narrativeEvents from "../data/narrativeEvents";
 
 jest.mock("../data/narrativeEvents", () => [
   {
@@ -32,6 +29,12 @@ describe("NarrativeManager", () => {
       getInnovationCredits: jest.fn(),
       getDataWarehouseCapacity: jest.fn(),
       isFeatureUnlocked: jest.fn(),
+      subscribeToFundsChanges: jest.fn(),
+      subscribeToProcessingSpeedChanges: jest.fn(),
+      subscribeToDataWarehouseCapacityChanges: jest.fn(),
+      subscribeToInnovationCreditsChanges: jest.fn(),
+      subscribeToPlayTimeChanges: jest.fn(),
+      subscribeToFeaturesChanges: jest.fn(),
     } as unknown as CoreState;
 
     narrativeManager = new NarrativeManager(coreState);
@@ -45,7 +48,7 @@ describe("NarrativeManager", () => {
   test("should check conditions and push messages for 'funds_reached'", () => {
     (coreState.getFunds as jest.Mock).mockReturnValue(1000);
 
-    narrativeManager["checkAndPushUnlockedEventsToQueue"]("funds_reached");
+    narrativeManager["checkAndPushUnlockedEventsToQueueByTriggerType"]("funds_reached");
 
     expect(narrativeManager["narrativeQueue"].length).toBe(1);
     expect(narrativeManager["narrativeQueue"][0].message).toBe("You have reached $1000! Keep going!");
@@ -54,7 +57,7 @@ describe("NarrativeManager", () => {
   test("should check conditions and push messages for 'play_time'", () => {
     (coreState.getPlayTime as jest.Mock).mockReturnValue(300);
 
-    narrativeManager["checkAndPushUnlockedEventsToQueue"]("play_time");
+    narrativeManager["checkAndPushUnlockedEventsToQueueByTriggerType"]("play_time");
 
     expect(narrativeManager["narrativeQueue"].length).toBe(1);
     expect(narrativeManager["narrativeQueue"][0].message).toBe(
@@ -79,5 +82,36 @@ describe("NarrativeManager", () => {
     narrativeManager["notifyAboutNewNarrative"]();
 
     expect(listener).not.toHaveBeenCalled();
+  });
+
+  test("should handle core state events and process event queue when max batch size is reached", () => {
+    narrativeManager["maxBatchSize"] = 2;
+    const processEventQueueSpy = jest.spyOn(narrativeManager as any, "processEventQueue");
+
+    narrativeManager["handleCoreStateEvent"]("funds_reached");
+    expect(processEventQueueSpy).not.toHaveBeenCalled();
+
+    narrativeManager["handleCoreStateEvent"]("play_time");
+    expect(processEventQueueSpy).toHaveBeenCalled();
+  });
+
+  test("should process event queue and push unique trigger types", () => {
+    const checkAndPushSpy = jest.spyOn(narrativeManager as any, "checkAndPushUnlockedEventsToQueueByTriggerType");
+
+    narrativeManager["eventQueue"] = ["funds_reached", "funds_reached", "play_time"];
+    narrativeManager["processEventQueue"]();
+
+    expect(checkAndPushSpy).toHaveBeenCalledWith("funds_reached");
+    expect(checkAndPushSpy).toHaveBeenCalledWith("play_time");
+  });
+
+  test("should handle play_time in every batch process", () => {
+    const checkAndPushSpy = jest.spyOn(narrativeManager as any, "checkAndPushUnlockedEventsToQueueByTriggerType");
+
+    narrativeManager["eventQueue"] = ["funds_reached"];
+    narrativeManager["processEventQueue"]();
+
+    expect(checkAndPushSpy).toHaveBeenCalledWith("funds_reached");
+    expect(checkAndPushSpy).toHaveBeenCalledWith("play_time");
   });
 });
