@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Typography, Box } from '@mui/material';
+import { Typography, Box, Paper } from '@mui/material';
 import { CoreStateContext } from '@/app/contexts/GameStateContext';
 import { CoreState } from '@/engine/core/CoreState';
 import { animate } from 'framer-motion';
@@ -34,7 +34,7 @@ function useResourceOverview(coreState: CoreState) {
   return { funds, data, processingSpeed, dataWarehouseCapacity, innovationCredits };
 }
 
-function AnimatedNumber({ value, roundModifier }: { value: number, roundModifier: number}) {
+function AnimatedNumber({ value, roundModifier }: { value: number, roundModifier: number }) {
   const [currentValue, setCurrentValue] = useState(value);
 
   useEffect(() => {
@@ -53,11 +53,13 @@ export function ResourceOverview() {
   const { funds, data, processingSpeed, dataWarehouseCapacity, innovationCredits } = useResourceOverview(coreState);
 
   return (
-    <Box>
-      <Typography variant="h6">Funds: $<AnimatedNumber value={funds} roundModifier={1} /></Typography>
-      <Typography variant="h6">Data Warehouse Usage: <AnimatedNumber value={data} roundModifier={1} />/<AnimatedNumber value={dataWarehouseCapacity} roundModifier={1} /> Mb</Typography>
-      <Typography variant="h6">Base Processing Speed: <AnimatedNumber value={processingSpeed} roundModifier={100} /> Mb/s</Typography>
-      <Typography variant="h6">Innovation Credits: (λ)<AnimatedNumber value={innovationCredits} roundModifier={1} /></Typography>
-    </Box>
+    <Paper elevation={2} sx={{ marginTop: 2, padding: 2, flexGrow: 1 }}>
+      <Box>
+        <Typography variant="h6">Funds: $<AnimatedNumber value={funds} roundModifier={1} /></Typography>
+        <Typography variant="h6">Data Warehouse Usage: <AnimatedNumber value={data} roundModifier={1} />/<AnimatedNumber value={dataWarehouseCapacity} roundModifier={1} /> Mb</Typography>
+        <Typography variant="h6">Base Processing Speed: <AnimatedNumber value={processingSpeed} roundModifier={100} /> Mb/s</Typography>
+        <Typography variant="h6">Innovation Credits: (λ)<AnimatedNumber value={innovationCredits} roundModifier={1} /></Typography>
+      </Box>
+    </Paper>
   );
 }

@@ -1,5 +1,5 @@
 import { Box, Tooltip, Typography } from "@mui/material";
-import { CoreStateContext } from '../../../contexts/GameStateContext';
+import { CoreStateContext } from '../../../../contexts/GameStateContext';
 import { Task } from "@/engine/entities/Task";
 import { useContext, useEffect, useState } from "react";
 import AnimatedButton from "@app/components/common"

@@ -9,8 +9,6 @@
     "lint:next": "next lint",
     "format:check": "prettier --check --ignore-path .gitignore --ignore-path .prettierignore .",
     "format:fix": "prettier --write --ignore-path .gitignore --ignore-path .prettierignore .",
-    "lint": "eslint . -c .js,.jsx,.ts,.tsx",
-    "lint:fix": "eslint . -c .js,.jsx,.ts,.tsx --fix",
     "test": "jest",
     "test:watch": "jest --watch",
     "storybook": "storybook dev -p 6006",
