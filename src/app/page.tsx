@@ -41,8 +41,8 @@ export default function Main() {
             alignItems="center"
             xs={12} md={8}
           >
-            <Grid item xs={12}>
-              {/* <NarrativeChat /> */}
+            <Grid item xs={12} sx={{ width: '80%' }}>
+              <NarrativeChat />
             </Grid>
             <Grid item xs={12} sx={{ width: '80%' }}>
               {/* TODO: Batch hardcoded for now */}

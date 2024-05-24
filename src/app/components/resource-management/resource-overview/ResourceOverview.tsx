@@ -53,7 +53,7 @@ export function ResourceOverview() {
   const { funds, data, processingSpeed, dataWarehouseCapacity, innovationCredits } = useResourceOverview(coreState);
 
   return (
-    <Paper elevation={2} sx={{ marginTop: 2, padding: 2, flexGrow: 1 }}>
+    <Paper elevation={2} sx={{padding: 2, flexGrow: 1 }}>
       <Box>
         <Typography variant="h6">Funds: $<AnimatedNumber value={funds} roundModifier={1} /></Typography>
         <Typography variant="h6">Data Warehouse Usage: <AnimatedNumber value={data} roundModifier={1} />/<AnimatedNumber value={dataWarehouseCapacity} roundModifier={1} /> Mb</Typography>
