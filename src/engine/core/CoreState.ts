@@ -2,6 +2,7 @@ import { DataCollectionService } from "../services/DataCollectionService";
 import { TaskService } from "../services/TaskService";
 import { Cost } from "../entities/Cost";
 import { EventEmitter } from "./EventEmitter";
+import { NarrativeManager } from "./NarrativeManager";
 
 
 export class CoreState {
@@ -10,11 +11,12 @@ export class CoreState {
   private processingSpeed: number; // Processing speed in Mb/s
   private dataWarehouseCapacity: number; // Capacity in Mb
   private innovationCredits: number;
-  private playTime: number;
+  private gameStartTime: number;
   private allUnlockedFeatures: string[];
   // Services
   taskService: TaskService;
   dataCollectionService: DataCollectionService;
+  narrativeManager: NarrativeManager;
   // Event emitters
   // TODO: should be private ? and renamed to coreStateEmitter
   eventEmitter: EventEmitter;
@@ -36,10 +38,7 @@ export class CoreState {
     this.dataWarehouseCapacity = 10 * 1024; // 10 Gb in Mb
     this.innovationCredits = 0;
     this.allUnlockedFeatures = [];
-    this.playTime = Date.now();
-    // Services
-    this.taskService = new TaskService(this);
-    this.dataCollectionService = new DataCollectionService(this);
+    this.gameStartTime = Date.now();
     // Event emitters
     this.eventEmitter = new EventEmitter();
     this.fundsEmitter = new EventEmitter();
@@ -52,6 +51,12 @@ export class CoreState {
     // Visibility modifiers
     this.commandLineVisible = true;
     this.dataCollectionVisible = true;
+    // Services
+    this.taskService = new TaskService(this);
+    this.dataCollectionService = new DataCollectionService(this);
+    this.narrativeManager = new NarrativeManager(this);
+    // Notify about playtime change every 5 seconds
+    this.notifyAboutPlayTimeChange();
   }
 
   /**
@@ -213,8 +218,16 @@ export class CoreState {
     this.featuresEmitter.notifyListeners();
   }
 
+  private notifyAboutPlayTimeChange() {
+    // notify about playtime change every 5 seconds
+    setInterval(() => {
+      console.log('Notifying about playtime change');
+      this.playTimeEmitter.notifyListeners();
+    }, 5000);
+  }
+
   // other methods...
-  getPlayTime(): number { return this.playTime; }
+  getPlayTime(): number { return (Date.now() - this.gameStartTime)/1000; }
   isFeatureUnlocked(feature: string): boolean { return this.allUnlockedFeatures.includes(feature); }
   publishUnlockedFeature(feature: string) {
     this.allUnlockedFeatures.push(feature);

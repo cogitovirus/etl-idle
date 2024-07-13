@@ -5,8 +5,8 @@ const narrativeEvents: NarrativeEvent[] = [
   {
     id: uuidv4(),
     trigger: 'funds_reached',
-    condition: { type: 'funds', value: 1000 },
-    message: "You have reached $1000! Keep going!",
+    condition: { type: 'funds', value: 100 },
+    message: "You have reached $100! Keep going!",
     delay: 0
   },
   {
@@ -29,7 +29,28 @@ const narrativeEvents: NarrativeEvent[] = [
     condition: { type: 'time', value: 300 },
     message: "You've been playing for 5 minutes! Time flies when you're processing data!",
     delay: 0
-  }
+  },
+  {
+    id: uuidv4(),
+    trigger: 'play_time',
+    condition: { type: 'time', value: 5 },
+    message: "5 sec mark message!",
+    delay: 0
+  },
+  {
+    id: uuidv4(),
+    trigger: 'play_time',
+    condition: { type: 'time', value: 10 },
+    message: "10 sec mark message!",
+    delay: 0
+  },
+  {
+    id: uuidv4(),
+    trigger: 'play_time',
+    condition: { type: 'time', value: 15 },
+    message: "15 sec mark message!",
+    delay: 0
+  },
 ];
 
 export default narrativeEvents;

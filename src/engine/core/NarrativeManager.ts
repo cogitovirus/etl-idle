@@ -12,7 +12,7 @@ export class NarrativeManager {
   private eventsByTrigger: Map<string, NarrativeEvent[]>;
   private defaultDelay: number = 2; // Default delay in seconds
   private eventQueue: TriggerType[]
-  private maxBatchSize: number = 10;
+  private maxBatchSize: number = 1;
 
   constructor(coreState: CoreState) {
     this.coreState = coreState;
@@ -35,7 +35,6 @@ export class NarrativeManager {
       // Push the event into the array for this trigger
       eventsByTrigger.get(event.trigger)!.push(event);
     });
-
     return eventsByTrigger;
   }
 
@@ -51,6 +50,8 @@ export class NarrativeManager {
 
   private handleCoreStateEvent(triggerType: TriggerType) {
     this.eventQueue.push(triggerType);
+    //TODO: remove console.log
+    console.log('Event Queue:', this.eventQueue);
     if (this.eventQueue.length >= this.maxBatchSize) {
       this.processEventQueue();
     }
@@ -108,21 +109,31 @@ export class NarrativeManager {
   private isNumber(value: TriggerValue): value is number {
     return typeof value === 'number';
   }
-  
+
   private isString(value: TriggerValue): value is string {
     return typeof value === 'string';
   }
 
-    /**
-   * Adds a message to the narrative queue and emits an event.
-   * @param {NarrativeEvent} event - The narrative event to add.
-   */
-    private pushMessage(event: NarrativeEvent) {
-      // TODO: wait here on in the component ?
-      const delay = event.delay !== undefined ? event.delay : this.defaultDelay;
-      this.narrativeQueue.push(event);
-      this.notifyAboutNewNarrative();
-    }
+  /**
+ * Adds a message to the narrative queue and emits an event.
+ * @param {NarrativeEvent} event - The narrative event to add.
+ */
+  private pushMessage(event: NarrativeEvent) {
+    // TODO: wait here on in the component ?
+    const delay = event.delay !== undefined ? event.delay : this.defaultDelay;
+    this.narrativeQueue.push(event);
+    this.notifyAboutNewNarrative();
+  }
+
+  public getAndClearNarrativeQueue(): NarrativeEvent[] {
+    const queue = [...this.narrativeQueue];
+    this.narrativeQueue = [];
+    return queue;
+  }
+
+  public getNarrativeQueueLength(): number {
+    return this.narrativeQueue.length;
+  }
 
   /**
    * Narrative Event Emitter
