@@ -4,6 +4,36 @@ import { motion, AnimatePresence } from "framer-motion";
 import { CoreStateContext } from '@/app/contexts/GameStateContext';
 import NarrativeEvent from '@/engine/entities/NarrativeEvent';
 
+function useTypewriter(text: string, speed: number = 25) {
+  const [displayedText, setDisplayedText] = useState('');
+
+  useEffect(() => {
+    let i = 0;
+    const timer = setInterval(() => {
+      if (i < text.length) {
+        setDisplayedText((prev) => prev + text.charAt(i));
+        i++;
+      } else {
+        clearInterval(timer);
+      }
+    }, speed);
+
+    return () => clearInterval(timer);
+  }, [text, speed]);
+
+  return displayedText;
+}
+
+function TypewriterMessage({ message }: { message: string }) {
+  const displayedText = useTypewriter(message, 30); // Adjust speed as needed
+
+  return (
+    <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', marginBottom: 1 }}>
+      {`> ${displayedText}`}
+    </Typography>
+  );
+}
+
 export function NarrativeChat() {
   const coreState = useContext(CoreStateContext);
   const [messages, setMessages] = useState<NarrativeEvent[]>([]);
@@ -33,11 +63,11 @@ export function NarrativeChat() {
 
   return (
     <Paper elevation={2} sx={{ padding: 2, height: 300, overflow: 'hidden' }}>
-      <Box 
+      <Box
         ref={containerRef}
         sx={{ 
           width: '100%', 
-          height: '100%', 
+          height: '300px', 
           overflow: 'auto', 
           fontFamily: 'monospace',
           display: 'flex',
@@ -53,9 +83,7 @@ export function NarrativeChat() {
               exit={{ opacity: 0, height: 0, marginBottom: 0, transition: { duration: 0.2 } }}
               transition={{ duration: 0.5 }}
             >
-              <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', marginBottom: 1 }}>
-                {`> ${message.message}`}
-              </Typography>
+              <TypewriterMessage message={message.message} />
             </motion.div>
           ))}
         </AnimatePresence>

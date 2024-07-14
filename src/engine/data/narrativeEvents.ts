@@ -7,14 +7,14 @@ const narrativeEvents: NarrativeEvent[] = [
     id: uuidv4(),
     trigger: 'play_time',
     condition: { type: 'time', value: 2 },
-    message: "Welcome to ETL Idle! You're now the manager of a cutting-edge data processing facility. Your mission: transform raw data into valuable insights. Start small, think big, and watch your data empire grow!",
+    message: "Weelcome to ETL Idle! You're now the manager of a cutting-edge data processing facility. Your mission: transform raw data into valuable insights. Start small, think big, and watch your data empire grow!",
     delay: 0
   },
   {
     id: uuidv4(),
     trigger: 'play_time',
     condition: { type: 'time', value: 20 },
-    message: "System notification: Two critical tasks available - 'Streamline Data Flow' and 'Data Brokerage'. Implementing these will significantly enhance operational efficiency and create new revenue streams. Recommend immediate action to optimize your data infrastructure.",
+    message: "Syystem notification: Two critical tasks available - 'Streamline Data Flow' and 'Data Brokerage'. Implementing these will significantly enhance operational efficiency and create new revenue streams. I Recommend immediate action to optimize your data infrastructure.",
     delay: 0
   },
   {
