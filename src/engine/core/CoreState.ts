@@ -221,7 +221,6 @@ export class CoreState {
   private notifyAboutPlayTimeChange() {
     // notify about playtime change every 5 seconds
     setInterval(() => {
-      console.log('Notifying about playtime change');
       this.playTimeEmitter.notifyListeners();
     }, 5000);
   }

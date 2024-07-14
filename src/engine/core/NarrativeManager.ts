@@ -50,21 +50,33 @@ export class NarrativeManager {
 
   private handleCoreStateEvent(triggerType: TriggerType) {
     this.eventQueue.push(triggerType);
-    //TODO: remove console.log
-    console.log('Event Queue:', this.eventQueue);
-    if (this.eventQueue.length >= this.maxBatchSize) {
+    if (!this.isProcessing) {
       this.processEventQueue();
     }
   }
 
   private processEventQueue() {
-    const uniqueTriggerTypes = Array.from(new Set(this.eventQueue));
-    // Always include play_time in the unique trigger types
-    uniqueTriggerTypes.push('play_time');
-    uniqueTriggerTypes.forEach(triggerType => {
-      this.checkAndPushUnlockedEventsToQueueByTriggerType(triggerType);
-    });
-    this.eventQueue = [];
+    if (this.isProcessing) {
+      return;
+    }
+    
+    this.isProcessing = true;
+    
+    try {
+      while (this.eventQueue.length > 0) {
+        const uniqueTriggerTypes = Array.from(new Set(this.eventQueue));
+        // Only add 'play_time' if it's not already in the queue
+        if (!uniqueTriggerTypes.includes('play_time')) {
+          uniqueTriggerTypes.push('play_time');
+        }
+        uniqueTriggerTypes.forEach(triggerType => {
+          this.checkAndPushUnlockedEventsToQueueByTriggerType(triggerType);
+        });
+        this.eventQueue = [];
+      }
+    } finally {
+      this.isProcessing = false;
+    }
   }
 
 
@@ -72,7 +84,11 @@ export class NarrativeManager {
     const events = this.eventsByTrigger.get(triggerType) || [];
     events.forEach(event => {
       if (this.checkCondition(triggerType, event.condition)) {
-        this.pushMessage(event);
+        // Check if this event is already in the narrativeQueue
+        const isEventAlreadyQueued = this.narrativeQueue.some(queuedEvent => queuedEvent.id === event.id);
+        if (!isEventAlreadyQueued) {
+          this.pushMessage(event);
+        }
         // Remove event from eventsByTrigger to prevent it from triggering again
         this.eventsByTrigger.set(triggerType, events.filter(e => e.id !== event.id));
       }
