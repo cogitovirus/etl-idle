@@ -4,31 +4,34 @@ import { motion, AnimatePresence } from "framer-motion";
 import { CoreStateContext } from '@/app/contexts/GameStateContext';
 import NarrativeEvent from '@/engine/entities/NarrativeEvent';
 
-function useTypewriter(text: string, speed: number = 25) {
-  const [displayedText, setDisplayedText] = useState('');
+
+function useTypewriter(text: string, speed: number = 30) {
+  const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    let i = 0;
-    const timer = setInterval(() => {
-      if (i < text.length) {
-        setDisplayedText((prev) => prev + text.charAt(i));
-        i++;
-      } else {
-        clearInterval(timer);
-      }
+    const interval = setInterval(() => {
+      setIndex(prevIndex => {
+        if (prevIndex < text.length) {
+          return prevIndex + 1;
+        }
+        clearInterval(interval);
+        return prevIndex;
+      });
     }, speed);
 
-    return () => clearInterval(timer);
+    return () => clearInterval(interval);
   }, [text, speed]);
 
-  return displayedText;
+  return text.slice(0, index);
+
 }
 
+
 function TypewriterMessage({ message }: { message: string }) {
-  const displayedText = useTypewriter(message, 30); // Adjust speed as needed
+  const displayedText = useTypewriter(message, 30 ); // Adjust speed as needed
 
   return (
-    <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', marginBottom: 1 }}>
+    <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap', marginBottom: 1 }}>
       {`> ${displayedText}`}
     </Typography>
   );
