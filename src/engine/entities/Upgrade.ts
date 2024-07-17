@@ -1,10 +1,12 @@
-import { CoreState } from '../core/CoreState';
-import { Cost } from './Cost';
+import { UpgradeEffect } from './UpgradeEffect';
 
 export interface Upgrade {
   id: string;
   name: string;
-  cost: Cost;
-  effect: (state: CoreState) => void;
-  prerequisites?: string[];
+  quote: string;
+  description: string;
+  cost: { type: "funds" | "data" | "innovationCredits", amount: number };
+  effect: UpgradeEffect | UpgradeEffect[];
+  prerequisites: string[];
+  isPurchased: boolean;
 }

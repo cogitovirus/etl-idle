@@ -17,5 +17,5 @@ export interface Task {
   isActive: boolean;
   timeLeft: number; // Time left to complete the current iteration in seconds
   status: 'Not Started' | 'In Progress' | 'Completed';
-  prerequisites?: string[]; // Array of task ids that need to be completed to unlock this task
+  prerequisites?: string[]; // Array of task ids / upgrade ids that need to be completed to unlock this task
 }

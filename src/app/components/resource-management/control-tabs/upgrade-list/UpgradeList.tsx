@@ -3,23 +3,24 @@ import { CoreStateContext } from '../../../../contexts/GameStateContext';
 import { Upgrade } from "@/engine/entities/Upgrade";
 import { useContext, useEffect, useState } from "react";
 import AnimatedButton from "@app/components/common"
-import { Cost } from "@/engine/entities/Cost";
-import { Modifier } from "@/engine/entities/Modifier";
+import { UpgradeEffect } from "@/engine/entities/UpgradeEffect";
 
-const renderCosts = (costs: Cost[]) => {
-  return costs.map((cost, index) => (
-    <Typography key={index} variant="caption">
-      {`${cost.type.charAt(0).toUpperCase() + cost.type.slice(1)}: ${cost.amount}`}
-    </Typography>
-  ));
-};
+const renderCost = (cost: { type: string, amount: number }) => (
+  <Typography variant="caption">
+    {`${cost.type.charAt(0).toUpperCase() + cost.type.slice(1)}: ${cost.amount}`}
+  </Typography>
+);
 
-const renderModifiers = (modifiers: Modifier[]) => {
-  return modifiers.map((modifier, index) => (
-    <Typography key={index} variant="caption">
-      {`${modifier.type.charAt(0).toUpperCase() + modifier.type.slice(1)}: ${modifier.value}`}
-    </Typography>
-  ));
+const renderEffect = (effect: UpgradeEffect) => {
+  switch (effect.type) {
+    case 'increaseProcessingSpeed':
+      return <Typography variant="caption">{`Increase Processing Speed: +${effect.amount}`}</Typography>;
+    case 'increaseDataWarehouseCapacity':
+      return <Typography variant="caption">{`Increase Data Warehouse Capacity: +${effect.amount} MB`}</Typography>;
+    // Add more cases as needed
+    default:
+      return null;
+  }
 };
 
 export function UpgradeList() {
@@ -54,18 +55,13 @@ export function UpgradeList() {
               <Typography variant="body1" sx={{ fontWeight: 'bold' }}>{upgrade.name}</Typography>
               <Typography variant="subtitle2" sx={{fontStyle: 'oblique', fontWeight: 500, fontSize: 13}}>&quot;{upgrade.quote}&quot;</Typography>
               <Typography variant="body2">{upgrade.description}</Typography>
-              {upgrade.costs && upgrade.costs.length > 0 && (
-                <>
-                  <Typography variant="body2" sx={{ fontWeight: 'bold' }}>Cost:</Typography>
-                  {renderCosts(upgrade.costs)}
-                </>
-              )}
-              {upgrade.modifiers && upgrade.modifiers.length > 0 && (
-                <>
-                  <Typography variant="body2" sx={{ fontWeight: 'bold' }}>Effects:</Typography>
-                  {renderModifiers(upgrade.modifiers)}
-                </>
-              )}
+              <Typography variant="body2" sx={{ fontWeight: 'bold' }}>Cost:</Typography>
+              {renderCost(upgrade.cost)}
+              <Typography variant="body2" sx={{ fontWeight: 'bold' }}>Effects:</Typography>
+              {Array.isArray(upgrade.effect) 
+                ? upgrade.effect.map((effect, index) => <div key={index}>{renderEffect(effect)}</div>)
+                : renderEffect(upgrade.effect)
+              }
             </div>
           }
           arrow>
