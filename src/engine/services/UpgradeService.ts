@@ -1,6 +1,6 @@
-import { v4 as uuid4 } from "uuid";
 import { Upgrade } from "../entities/Upgrade";
 import { upgrades } from "../data/upgrades";
+import { Cost } from "../entities/Cost";
 import { CoreState } from "../core/CoreState";
 import { EventEmitter } from "../core/EventEmitter";
 
@@ -60,7 +60,7 @@ export class UpgradeService {
         const upgrade = this.getAvailableUpgrades().find(u => u.id === upgradeId);
         if (upgrade && this.coreState.canAfford(upgrade.cost)) {
             upgrade.isPurchased = true;
-            this.coreState.deductFunds([upgrade.cost]);
+            this.coreState.deductFunds(upgrade.cost);
             this.applyUpgradeEffects(upgrade);
             this.notifyAboutUpgradesChange();
         }

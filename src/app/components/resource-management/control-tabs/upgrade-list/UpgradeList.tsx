@@ -1,32 +1,35 @@
+import React, { useContext, useEffect, useState } from 'react';
 import { Box, Tooltip, Typography } from "@mui/material";
 import { CoreStateContext } from '../../../../contexts/GameStateContext';
-import { Upgrade } from "@/engine/entities/Upgrade";
-import { useContext, useEffect, useState } from "react";
-import AnimatedButton from "@app/components/common"
-import { UpgradeEffect } from "@/engine/entities/UpgradeEffect";
+import AnimatedButton from "@app/components/common";
+import { Upgrade } from '@/engine/entities/Upgrade';
+import { Cost } from '@/engine/entities/Cost';
+import { UpgradeEffect } from '@/engine/entities/UpgradeEffect';
 
-const renderCost = (cost: { type: string, amount: number }) => (
-  <Typography variant="caption">
-    {`${cost.type.charAt(0).toUpperCase() + cost.type.slice(1)}: ${cost.amount}`}
-  </Typography>
-);
+const renderCosts = (costs: Cost[]) => {
+  return costs.map((cost, index) => (
+    <Typography key={index} variant="caption">
+      {`${cost.type.charAt(0).toUpperCase() + cost.type.slice(1)}: ${cost.amount}`}
+    </Typography>
+  ));
+};
 
 const renderEffect = (effect: UpgradeEffect) => {
   switch (effect.type) {
     case 'increaseProcessingSpeed':
-      return <Typography variant="caption">{`Increase Processing Speed: +${effect.amount}`}</Typography>;
+      return `Increase Processing Speed: ${effect.amount}`;
     case 'increaseDataWarehouseCapacity':
-      return <Typography variant="caption">{`Increase Data Warehouse Capacity: +${effect.amount} MB`}</Typography>;
-    // Add more cases as needed
+      return `Increase Data Warehouse Capacity: ${effect.amount}`;
+    case 'addFunds':
+      return `Add Funds: ${effect.amount}`;
     default:
-      return null;
+      return `Unknown effect: ${JSON.stringify(effect)}`;
   }
 };
 
 export function UpgradeList() {
   const coreState = useContext(CoreStateContext);
   const [availableUpgrades, setAvailableUpgrades] = useState<Upgrade[]>(coreState.upgradeService.getAvailableUpgrades());
-  const [forceRender, setForceRender] = useState(false);
 
   useEffect(() => {
     const handleUpgradesChange = () => {
@@ -42,7 +45,6 @@ export function UpgradeList() {
 
   const handlePurchaseUpgrade = (upgradeId: string) => {
     coreState.upgradeService.purchaseUpgrade(upgradeId);
-    setForceRender(prev => !prev); // Toggle state to force re-render
   };
 
   return (
@@ -56,7 +58,7 @@ export function UpgradeList() {
               <Typography variant="subtitle2" sx={{fontStyle: 'oblique', fontWeight: 500, fontSize: 13}}>&quot;{upgrade.quote}&quot;</Typography>
               <Typography variant="body2">{upgrade.description}</Typography>
               <Typography variant="body2" sx={{ fontWeight: 'bold' }}>Cost:</Typography>
-              {renderCost(upgrade.cost)}
+              {renderCosts(upgrade.cost)}
               <Typography variant="body2" sx={{ fontWeight: 'bold' }}>Effects:</Typography>
               {Array.isArray(upgrade.effect) 
                 ? upgrade.effect.map((effect, index) => <div key={index}>{renderEffect(effect)}</div>)
