@@ -4,6 +4,7 @@ import { Cost } from "../entities/Cost";
 import { EventEmitter } from "./EventEmitter";
 import { NarrativeManager } from "./NarrativeManager";
 import { UpgradeService } from "../services/UpgradeService";
+import { ActionService } from "../services/ActionService";
 
 
 export class CoreState {
@@ -19,6 +20,7 @@ export class CoreState {
   dataCollectionService: DataCollectionService;
   narrativeManager: NarrativeManager;
   upgradeService: UpgradeService;
+  actionService: ActionService;
   // Event emitters
   // TODO: should be private ? and renamed to coreStateEmitter
   eventEmitter: EventEmitter;
@@ -58,6 +60,7 @@ export class CoreState {
     this.dataCollectionService = new DataCollectionService(this);
     this.narrativeManager = new NarrativeManager(this);
     this.upgradeService = new UpgradeService(this);
+    this.actionService = new ActionService(this);
     // Notify about playtime change every 5 seconds
     this.notifyAboutPlayTimeChange();
   }

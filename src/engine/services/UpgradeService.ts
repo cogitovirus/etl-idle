@@ -62,6 +62,10 @@ export class UpgradeService {
             upgrade.isPurchased = true;
             this.coreState.deductFunds(upgrade.cost);
             this.applyUpgradeEffects(upgrade);
+
+            // Remove the purchased upgrade from availableUpgrades
+            this.availableUpgrades = this.availableUpgrades.filter(u => u.id !== upgradeId);
+            
             this.notifyAboutUpgradesChange();
         }
     }
