@@ -18,7 +18,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" style={{ fontSize: '14px' }}> {/* Set the root font size to 12 pixels */}
       <body>
         <AppRouterCacheProvider>
           <ThemeProvider theme={theme}>

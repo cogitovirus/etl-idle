@@ -29,21 +29,22 @@ const theme = createTheme({
   },
   typography: {
     fontFamily: '"Courier New", Courier, monospace', // Retro font style
+    fontSize: 12, // Adjust font size to make the text smaller
     h1: {
-      fontFamily: '"VT323", monospace',
-      fontSize: '2.25rem',
-    },
-    h2: {
-      fontFamily: '"VT323", monospace',
-      fontSize: '2rem',
-    },
-    h3: {
       fontFamily: '"VT323", monospace',
       fontSize: '1.75rem',
     },
-    h4: {
+    h2: {
       fontFamily: '"VT323", monospace',
       fontSize: '1.5rem',
+    },
+    h3: {
+      fontFamily: '"VT323", monospace',
+      fontSize: '1.25rem',
+    },
+    h4: {
+      fontFamily: '"VT323", monospace',
+      fontSize: '1.25rem',
     },
     h5: {
       fontFamily: '"VT323", monospace',
@@ -76,7 +77,7 @@ const theme = createTheme({
           color: grey[100], // Text color for buttons
           border: `1px solid ${blue[700]}`, // Border color for buttons
           fontFamily: '"VT323", monospace', // Match the font family of h6
-          fontSize: '1rem', // Match the font size of h6
+          // fontSize: '1rem', // Match the font size of h6
           textTransform: 'none', // Ensure text is not all caps
           // fontWeight: 'bold', // Thicker text for buttons
           // '&:hover': {
@@ -158,7 +159,7 @@ const theme = createTheme({
           // fontFamily: '"Courier New", Courier, monospace', // Retro font style for tooltip
           backgroundColor: '#FFFFFF', // Tooltip background color
           color: grey[800], // Tooltip text color
-          fontSize: '0.8rem', // Slightly smaller font size
+          fontSize: '1rem', // Slightly smaller font size
           border: `1px solid ${grey[700]}`, // Border for cards
 
         },

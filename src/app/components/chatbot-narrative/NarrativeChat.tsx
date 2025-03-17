@@ -31,7 +31,7 @@ function TypewriterMessage({ message }: { message: string }) {
   const displayedText = useTypewriter(message, 30 ); // Adjust speed as needed
 
   return (
-    <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap', marginBottom: 1 }}>
+    <Typography variant="h6" sx={{ whiteSpace: 'pre-wrap', marginBottom: 1 }}>
       {`> ${displayedText}`}
     </Typography>
   );
