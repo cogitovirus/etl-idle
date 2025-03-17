@@ -55,7 +55,7 @@ export function ResourceOverview() {
   return (
     <Paper elevation={2} sx={{padding: 2, flexGrow: 1 }}>
       <Box>
-        <Typography variant="h6">Funds: $<AnimatedNumber value={funds} roundModifier={1} /></Typography>
+        <Typography variant="h6">Funds: ￦<AnimatedNumber value={funds} roundModifier={1} /></Typography>
         <Typography variant="h6">Data Warehouse Usage: <AnimatedNumber value={data} roundModifier={1} />/<AnimatedNumber value={dataWarehouseCapacity} roundModifier={1} /> Mb</Typography>
         <Typography variant="h6">Base Processing Speed: <AnimatedNumber value={processingSpeed} roundModifier={100} /> Mb/s</Typography>
         <Typography variant="h6">Innovation Credits: (λ)<AnimatedNumber value={innovationCredits} roundModifier={1} /></Typography>

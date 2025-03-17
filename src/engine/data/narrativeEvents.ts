@@ -21,7 +21,7 @@ const narrativeEvents: NarrativeEvent[] = [
     id: uuidv4(),
     trigger: 'funds_reached',
     condition: { type: 'funds', value: 100 },
-    message: "You have reached $100! Keep going!",
+    message: "You have reached ￦100! Keep going!",
     delay: 0
   },
   // features

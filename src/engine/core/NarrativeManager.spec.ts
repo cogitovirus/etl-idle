@@ -6,7 +6,7 @@ jest.mock("../data/narrativeEvents", () => [
     id: "1",
     trigger: "funds_reached",
     condition: { type: "funds", value: 1000 },
-    message: "You have reached $1000! Keep going!",
+    message: "You have reached ￦1000! Keep going!",
     delay: 0,
   },
   {
@@ -51,7 +51,7 @@ describe("NarrativeManager", () => {
     narrativeManager["checkAndPushUnlockedEventsToQueueByTriggerType"]("funds_reached");
 
     expect(narrativeManager["narrativeQueue"].length).toBe(1);
-    expect(narrativeManager["narrativeQueue"][0].message).toBe("You have reached $1000! Keep going!");
+    expect(narrativeManager["narrativeQueue"][0].message).toBe("You have reached ￦1000! Keep going!");
   });
 
   test("should check conditions and push messages for 'play_time'", () => {

@@ -125,7 +125,7 @@ export class CoreState {
   exchangeDataForFunds(amount: number) {
     if (this.data >= amount) {
       this.data -= amount;
-      this.addFunds(amount); // TODO: Modify exchange rate. right now: 1 Mb = $1
+      this.addFunds(amount); // TODO: Modify exchange rate. right now: 1 Mb = ￦1
       this.notifyAboutCoreStateChange();
     }
   }
